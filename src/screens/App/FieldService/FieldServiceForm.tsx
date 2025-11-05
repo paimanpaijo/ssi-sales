@@ -6,6 +6,7 @@ import SelectModalInput from "@/src/component/SelectModalInput";
 import { useFieldServiceContext } from "@/src/context/App/FieldServiceContext";
 import { formatDateForDisplay } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import {
   Keyboard,
@@ -61,7 +62,6 @@ const FieldServiceForm = () => {
   } = fieldService;
   const [project_name, setProjectName] = useState("");
   useEffect(() => {
-    console.log("fieldService", project_name, fieldService.x_studio_district);
     handleOnChange("name", project_name + " " + fieldService.x_studio_district);
   }, [project_name, fieldService.x_studio_district]);
   return (
@@ -72,6 +72,11 @@ const FieldServiceForm = () => {
         keyboardVerticalOffset={100} // bisa disesuaikan
         style={[formStyles.wrapper, { padding: 10, marginBottom: 25 }]}
       >
+        <FormHeader
+          title="Check In"
+          onClose={() => setIsForm(false)}
+          onSave={handleSave}
+        />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
             contentContainerStyle={formStyles.scrollContainer} // Tambahkan style container
@@ -80,11 +85,6 @@ const FieldServiceForm = () => {
             <View
               style={[formStyles.wrapper, { padding: 10, marginBottom: 30 }]}
             >
-              <FormHeader
-                title="Check In"
-                onClose={() => setIsForm(false)}
-                onSave={handleSave}
-              />
               <TextInput
                 label="Title"
                 editable={false}
@@ -162,8 +162,8 @@ const FieldServiceForm = () => {
                 }
                 onConfirm={({ date }) => {
                   setVisible(false);
-
-                  handleOnChange("x_studio_activity_date", date);
+                  const formattedDate = format(date, "yyyy-MM-dd HH:mm:ss");
+                  handleOnChange("x_studio_activity_date", formattedDate);
                 }}
                 saveLabel="OK"
                 cancelLabel="Cancel"
@@ -255,20 +255,12 @@ const FieldServiceForm = () => {
                 right={
                   <TextInput.Icon
                     icon="map-marker"
-                    backgroundColor="blue"
+                    onPress={() => setVisibleMap(true)}
                     color="white"
-                    mode="contained"
-                    onPress={() => {
-                      setVisibleMap(true);
-                    }}
                     style={{
-                      backgroundColor: "blue",
-                      borderRadius: 4, // 🔹 ubah jadi kotak
-                      width: 40, // 🔹 pastikan bentuk proporsional
-                      height: 40,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginRight: 5, // 🔹 beri sedikit jarak dari edge kanan
+                      marginRight: 4,
+                      backgroundColor: "#0d6efd",
+                      borderRadius: 5,
                     }}
                   />
                 }

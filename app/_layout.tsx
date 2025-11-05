@@ -3,19 +3,19 @@
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { FieldServiceContextProvider } from "@/src/context/App/FieldServiceContext";
 import { SalesOrderContextProvider } from "@/src/context/App/SalesOrderContext";
-import { AuthProvider } from "@/src/context/AuthContext";
+import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import {
   DarkTheme as NavDarkTheme,
   DefaultTheme as NavDefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { registerTranslation } from "react-native-paper-dates";
 import "react-native-reanimated";
 
-// <-- Tambahan import:
-import React from "react";
+import React, { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 import {
   MD3DarkTheme,
   MD3LightTheme,
@@ -23,6 +23,7 @@ import {
 } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+// 🔠 Bahasa Indonesia untuk date picker
 registerTranslation("id", {
   save: "Simpan",
   selectSingle: "Pilih tanggal",
@@ -46,53 +47,24 @@ export const unstable_settings = {
   anchor: "SSI",
 };
 
+// =============================
+// 1️⃣ Root utama
+// =============================
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  // pilih tema paper sesuai colorScheme
   const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
-
-  // Jika mau sinkron dengan navigation theme (opsional)
   const navTheme = colorScheme === "dark" ? NavDarkTheme : NavDefaultTheme;
 
   return (
-    // React Navigation theme provider (opsional)
     <ThemeProvider value={navTheme}>
-      {/* SafeAreaProvider untuk handling notch/statusbar */}
       <SafeAreaProvider>
-        {/* PaperProvider harus di ROOT sebelum komponen Paper apa pun */}
         <PaperProvider theme={paperTheme}>
-          {/* Context auth & app di dalam PaperProvider */}
+          {/* Letakkan AuthProvider di sini */}
           <AuthProvider>
             <SalesOrderContextProvider>
               <FieldServiceContextProvider>
-                <Stack>
-                  <Stack.Screen
-                    name="login"
-                    options={{ headerShown: true, title: "Shriram Seed Sales" }}
-                  />
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="sales"
-                    options={{
-                      headerShown: true,
-                      title: "Sales Order",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="fieldservice/index"
-                    options={{
-                      headerShown: true,
-                      title: "Field Service",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="modal"
-                    options={{ presentation: "modal", title: "Modal" }}
-                  />
-                </Stack>
+                {/* Komponen yang melakukan proteksi route */}
+                <AppContent />
               </FieldServiceContextProvider>
             </SalesOrderContextProvider>
             <StatusBar style="auto" />
@@ -100,5 +72,54 @@ export default function RootLayout() {
         </PaperProvider>
       </SafeAreaProvider>
     </ThemeProvider>
+  );
+}
+
+// =============================
+// 2️⃣ Komponen dengan proteksi login
+// =============================
+function AppContent() {
+  const { token, loading } = useAuth();
+  const router = useRouter();
+
+  // Jika belum login → arahkan ke halaman login
+  useEffect(() => {
+    if (!loading) {
+      if (!token) router.replace("/login");
+    }
+  }, [token, loading]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-white">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <Stack>
+      <Stack.Screen
+        name="login"
+        options={{ headerShown: true, title: "Shriram Seed Sales" }}
+      />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="sales"
+        options={{ headerShown: true, title: "Sales Order" }}
+      />
+      <Stack.Screen
+        name="fieldservice/index"
+        options={{ headerShown: true, title: "Field Service" }}
+      />
+      <Stack.Screen
+        name="customer/index"
+        options={{ headerShown: true, title: "Customer" }}
+      />
+      <Stack.Screen
+        name="modal"
+        options={{ presentation: "modal", title: "Modal" }}
+      />
+    </Stack>
   );
 }

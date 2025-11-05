@@ -2,16 +2,16 @@
 import axios from "axios";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Modal, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { Button } from "react-native-paper";
+import { IconButton, Text } from "react-native-paper";
 
 const GOOGLE_MAPS_API_KEY =
   process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY ||
   Constants.expoConfig?.extra?.googleMapsApiKey;
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
   const [region, setRegion] = useState({
@@ -22,17 +22,35 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
   });
   const [marker, setMarker] = useState(null);
 
+  // ✅ Saat modal terbuka, langsung ambil lokasi terkini
+  useEffect(() => {
+    if (visible) {
+      handleCurrentLocation();
+    }
+  }, [visible]);
+
   const handleCurrentLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") return;
-    const location = await Location.getCurrentPositionAsync({});
-    setRegion({
-      ...region,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
-    setMarker(location.coords);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") return;
+
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+      });
+
+      const { latitude, longitude } = location.coords;
+
+      setRegion({
+        ...region,
+        latitude,
+        longitude,
+      });
+      setMarker({ latitude, longitude });
+    } catch (error) {
+      console.warn("Gagal mendapatkan lokasi:", error);
+    }
   };
+
   const getAddressFromCoords = async (lat: number, lng: number) => {
     try {
       const response = await axios.get(
@@ -58,10 +76,10 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
           findComponent("administrative_area_level_2") ||
           findComponent("locality") ||
           "";
-        const provinsi = findComponent("administrative_area_level_1") || "";
+        const propinsi = findComponent("administrative_area_level_1") || "";
 
         return {
-          propinsi: provinsi,
+          propinsi,
           kabupaten,
           kecamatan,
           alamat,
@@ -83,24 +101,16 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
         marker.longitude
       );
 
-      if (detail) {
-        onSelectLocation({
-          lat: marker.latitude,
-          lng: marker.longitude,
-          detail,
-        });
-      } else {
-        onSelectLocation({
-          lat: marker.latitude,
-          lng: marker.longitude,
-          detail: {
-            propinsi: "",
-            kabupaten: "",
-            kecamatan: "",
-            alamat: "",
-          },
-        });
-      }
+      onSelectLocation({
+        lat: marker.latitude,
+        lng: marker.longitude,
+        detail: detail || {
+          propinsi: "",
+          kabupaten: "",
+          kecamatan: "",
+          alamat: "",
+        },
+      });
 
       onClose();
     }
@@ -109,16 +119,10 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
-        {/* ✅ Search Box */}
-
-        {/* ✅ Peta */}
         <MapView
           style={{ flex: 1 }}
           region={region}
           onRegionChangeComplete={setRegion}
-          showsUserLocation
-          showsMyLocationButton
-          
           onPress={(e) => {
             const { latitude, longitude } = e.nativeEvent.coordinate;
             setMarker({ latitude, longitude });
@@ -127,17 +131,42 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
           {marker && <Marker coordinate={marker} />}
         </MapView>
 
-        {/* ✅ Tombol Aksi */}
         <View style={styles.footer}>
-          <Button mode="contained" onPress={handleCurrentLocation}>
-            Current Location
-          </Button>
-          <Button mode="contained" onPress={handleSelect}>
-            Pilih Lokasi
-          </Button>
-          <Button onPress={onClose} textColor="red">
-            Tutup
-          </Button>
+          <View style={styles.iconContainer}>
+            <IconButton
+              icon="crosshairs-gps"
+              onPress={handleCurrentLocation}
+              mode="contained"
+              iconColor="white"
+              size={25}
+              style={{ backgroundColor: "blue" }}
+            />
+            <Text style={styles.iconLabel}>Current Location</Text>
+          </View>
+
+          <View style={styles.iconContainer}>
+            <IconButton
+              icon="map-marker-radius"
+              onPress={handleSelect}
+              mode="contained"
+              iconColor="white"
+              size={25}
+              style={{ backgroundColor: "green" }}
+            />
+            <Text style={styles.iconLabel}>Set Location</Text>
+          </View>
+
+          <View style={styles.iconContainer}>
+            <IconButton
+              icon="close"
+              onPress={onClose}
+              mode="contained"
+              iconColor="white"
+              size={25}
+              style={{ backgroundColor: "red" }}
+            />
+            <Text style={styles.iconLabel}>Cancel</Text>
+          </View>
         </View>
       </View>
     </Modal>
@@ -145,19 +174,29 @@ const MapPickerModal = ({ visible, onClose, onSelectLocation }) => {
 };
 
 const styles = StyleSheet.create({
-  autocompleteContainer: {
-    position: "absolute",
-    top: 40,
-    width: width - 20,
-    alignSelf: "center",
-    zIndex: 1,
-  },
   footer: {
     position: "absolute",
-    top: 10,
-    width: "100%",
+    bottom: 45,
+    width: "97%",
     flexDirection: "row",
     justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // 💡 semi transparan
+    borderRadius: 10,
+    margin: 5,
+    paddingVertical: 1,
+
+    padding: 10,
+  },
+  iconContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconLabel: {
+    color: "white",
+    fontSize: 12,
+    marginTop: 1,
+    fontWeight: "bold",
   },
 });
 

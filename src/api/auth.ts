@@ -7,7 +7,7 @@ const { apiUrlOdoo, apiURLZurra } = Constants.expoConfig.extra;
 
 export async function login(email: string, password: string) {
   const url = apiURLZurra + "/login";
-  console.log(url);
+
   const sts = "mobile";
   const response = await axios.post(
     url,
@@ -18,7 +18,7 @@ export async function login(email: string, password: string) {
       },
     }
   );
-  console.log(response.data);
+
   return response.data; // misal { token, user }
 }
 

@@ -168,15 +168,9 @@ export default function LoginScreen() {
         <ScrollView contentContainerStyle={loginStyles.scrollContainer}>
           <View style={loginStyles.formContainer}>
             <Image
-              source={require("@/assets/images/SSILogo.png")}
+              source={require("@/assets/images/logo.png")}
               style={loginStyles.imagelogo}
             />
-            <Text
-              variant="headlineSmall"
-              style={{ marginBottom: 20, color: "white", textAlign: "center" }}
-            >
-              Shriram Seed Indonesia™
-            </Text>
 
             <TextInput
               label="Email"
@@ -232,6 +226,14 @@ export default function LoginScreen() {
               visible={showBiometricPrompt}
               onClose={() => setShowBiometricPrompt(false)}
             />
+            <View style={loginStyles.footer}>
+              <Text variant="bodySmall" style={{ color: "white" }}>
+                Versi 1.0
+              </Text>
+              <Text variant="bodySmall" style={{ color: "white" }}>
+                &copy; 2025 Shriram Seed Indonesia™
+              </Text>
+            </View>
           </View>
         </ScrollView>
 

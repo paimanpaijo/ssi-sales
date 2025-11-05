@@ -53,7 +53,7 @@ export const SalesOrderContextProvider = ({ children }) => {
         if (item.x_studio_type !== null) {
           cust.push({
             id: item.id,
-            label: item.name,
+            label: item.complete_name,
             value: item.id,
             x_studio_type: item.x_studio_type,
           });
@@ -129,12 +129,14 @@ export const SalesOrderContextProvider = ({ children }) => {
 
   const handleAddOrder = (newOrder, quantity) => {
     let unitprice = newOrder.listPrice;
+
     getPriceListDetail(priceList[0].id, newOrder.id).then((res) => {
       if (res.length > 0) {
         unitprice = res[0].fixed_price;
       }
-      let discount = 0;
+
       let ttldiscount = parseFloat(discFarm) + parseFloat(discRet);
+      let discount = ttldiscount / 100;
 
       if (paymentTerm) {
         if (paymentTerm.discount_percentage != false) {
@@ -149,7 +151,7 @@ export const SalesOrderContextProvider = ({ children }) => {
         id: 0,
         key: key,
         product_id: newOrder.id,
-        product_name: newOrder.name,
+        product_name: newOrder.label,
         quantity: quantity,
         price_unit: unitprice,
         totalPrice: quantity * unitprice,
@@ -190,7 +192,7 @@ export const SalesOrderContextProvider = ({ children }) => {
           x_studio_farmer_discount: discFarm,
           items: orderList,
         };
-        x_s;
+
         Alert.alert("Confirm", "Are you sure to submit ?", [
           {
             text: "Cancel",
@@ -201,8 +203,27 @@ export const SalesOrderContextProvider = ({ children }) => {
             text: "OK",
             onPress: () => {
               submitSales(data).then((res) => {
-                setIsForm(false);
-                setOrderList([]);
+                if (res.success) {
+                  Alert.alert("Success", "Data has been saved", [
+                    { text: "OK" },
+                  ]);
+                  setIsForm(false);
+                  setOrderList([]);
+                  getSalesList(
+                    selectMonth,
+                    selectYear,
+                    "all",
+                    user.id,
+                    page,
+                    10
+                  ).then((res) => {
+                    setSalesorderList(res.data);
+                    setTotalPage(res.totalPage);
+                    setTotal(res.total);
+                  });
+                } else {
+                  Alert.alert("Error", res.message, [{ text: "OK" }]);
+                }
               });
             },
           },

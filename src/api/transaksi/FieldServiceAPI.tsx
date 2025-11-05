@@ -7,6 +7,8 @@ import Constants from "expo-constants";
 const { apiUrlOdoo } = Constants.expoConfig.extra;
 
 export const getFieldService = async (
+  month,
+  year,
   se_id,
   status_id,
   cust_id,
@@ -16,6 +18,13 @@ export const getFieldService = async (
   let sts = "";
   let se = "";
   let cust = "";
+
+  if (month !== 0) {
+    month = `&month=${month}`;
+  }
+  if (year !== 0) {
+    year = `&year=${year}`;
+  }
 
   if (se_id !== 0) {
     se = `&se_id=${se_id}`;
@@ -34,6 +43,8 @@ export const getFieldService = async (
     limit +
     se +
     sts +
+    month +
+    year +
     cust;
 
   const response = await axios.get(url);
@@ -64,5 +75,11 @@ export const updateFieldService = async (data) => {
     },
   });
 
+  return response.data;
+};
+
+export const getFieldServiceDetail = async (id) => {
+  const url = apiUrlOdoo + "/fieldservice/" + id;
+  const response = await axios.get(url);
   return response.data;
 };

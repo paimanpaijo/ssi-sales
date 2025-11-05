@@ -49,3 +49,18 @@ export const getSalesList = async (
   const response = await axios.get(url);
   return response.data;
 };
+
+export const SummarySalesAPI = async (user_id, month, year) => {
+  let se = "";
+  let mth = "";
+  if (user_id !== 0) {
+    se = `&sales_exec=${user_id}`;
+  }
+  if (month !== 0) {
+    mth = `&month=${month}`;
+  }
+  const url = apiUrlOdoo + `/sales/summarysales?year=${year}` + se + mth;
+
+  const response = await axios.get(url);
+  return response.data;
+};

@@ -13,17 +13,24 @@ export default StyleSheet.create({
     margin: 20,
     padding: 20,
     borderRadius: 12,
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: "rgba(1,4,7,0.5)",
   },
   input: { marginBottom: 15 },
   imagelogo: {
-    marginBottom: 5,
+    marginVertical: 30,
     alignSelf: "center",
     width: 200,
     height: 200,
     resizeMode: "contain",
-    backgroundColor: "rgba(255,255,255,0.8)", // putih 60% transparan
+    backgroundColor: "rgba(255,255,255,1)", // putih 60% transparan
     borderRadius: 20, // opsional biar agak rounded
-    padding: 10, // kasih jarak biar logo nggak nempel tepi background
+    padding: 3, // kasih jarak biar logo nggak nempel tepi background
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    color: "white",
+    fontWeight: "bold",
   },
 });

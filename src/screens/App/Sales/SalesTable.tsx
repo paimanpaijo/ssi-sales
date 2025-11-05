@@ -1,8 +1,10 @@
 /** @format */
 
 import MonthYearPickerModal from "@/src/component/MonthYearPickerModal";
+import PagingMobile from "@/src/component/PagingMobile";
 import { useSalesOrderContext } from "@/src/context/App/SalesOrderContext";
 import { formatDateIDN, formatNumber } from "@/src/library/Utility";
+import formStyles from "@/src/style/FormStyles";
 import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 import { Button, Card, FAB, Text } from "react-native-paper";
@@ -145,10 +147,15 @@ const SalesTable = () => {
       </Card.Content>
     </Card>
   );
-
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
   return (
     <View style={{ flex: 1 }}>
       <View style={{ paddingHorizontal: 15 }}>
+        <Text style={[formStyles.Header, { marginBottom: 0 }]}>
+          Sales Order
+        </Text>
         <Button
           mode="contained-tonal"
           onPress={() => setShowPicker(true)}
@@ -174,7 +181,7 @@ const SalesTable = () => {
           }}
         />
       </View>
-      <View style={{ maxHeight: 700 }}>
+      <View style={{ height: 650 }}>
         <FlatList
           data={salesorderList}
           renderItem={renderItemOrder}
@@ -183,6 +190,11 @@ const SalesTable = () => {
             item.id?.toString() || item.no_sales_order || index.toString()
           }
         />
+        <PagingMobile
+          currentPage={page}
+          totalPage={totalPage}
+          onPageChange={(pg) => handlePageChange(pg)}
+        />
       </View>
 
       <FAB
@@ -190,15 +202,7 @@ const SalesTable = () => {
         color="white"
         size="30"
         onPress={() => setIsForm(true)}
-        style={{
-          position: "absolute",
-          bottom: 50,
-          right: 20,
-
-          backgroundColor: "blue",
-          zIndex: 10,
-          elevation: 5,
-        }}
+        style={formStyles.fabBlue}
       />
     </View>
   );

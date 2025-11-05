@@ -167,3 +167,42 @@ export const formatDateForDisplay = (dateString) => {
     return dateString;
   }
 };
+
+export const getDiffInSeconds = (odooDatetimeString) => {
+  // 1️⃣ Parse tanggal dari Odoo (format: "YYYY-MM-DD HH:mm:ss")
+  const odooDate = new Date(odooDatetimeString.replace(" ", "T") + "Z");
+
+  // 2️⃣ Ambil waktu sekarang
+  const now = new Date();
+
+  // 3️⃣ Hitung selisih dalam milidetik
+  const diffMs = now - odooDate;
+
+  // 4️⃣ Konversi ke detik
+  const diffSeconds = Math.floor(diffMs / 1000);
+
+  return diffSeconds;
+};
+export function getHoursDecimal(startTime, endTime) {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  const diffMs = end - start; // selisih milidetik
+  const diffHours = diffMs / (1000 * 60 * 60); // konversi ke jam (float)
+  return parseFloat(diffHours.toFixed(2)); // dibulatkan 2 digit desimal
+}
+export const formatPhoneNumber = (number) => {
+  if (!number) return "";
+
+  // Hilangkan spasi atau tanda hubung
+  const clean = number.replace(/\s|-/g, "");
+
+  if (clean.startsWith("0")) {
+    // Ubah 0 di awal jadi +62
+    return "+62" + clean.substring(1);
+  } else if (!clean.startsWith("+62")) {
+    // Jika belum ada +62 dan bukan 0, bisa ditambahkan manual (opsional)
+    return "+62" + clean;
+  }
+
+  return clean;
+};

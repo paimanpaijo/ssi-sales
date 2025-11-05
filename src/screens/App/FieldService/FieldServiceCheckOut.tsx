@@ -31,7 +31,8 @@ const FieldServiceCheckOut = () => {
     productDemo,
   } = useFieldServiceContext();
   const [activeTab, setActiveTab] = useState("foto");
-
+  const headerHeight = 0; // samakan dengan height headermu
+  const safeTop = Platform.OS === "ios" ? 0 : 0;
   const [demo, setDemo] = useState({
     product: "",
     ubinan: "",
@@ -39,180 +40,185 @@ const FieldServiceCheckOut = () => {
   });
 
   return (
-    <View style={[formStyles.wrapper, { padding: 10 }]}>
+    <View style={[formStyles.wrapper, { padding: 1 }]}>
       <KeyboardAvoidingView
         style={{ flex: 1, marginTop: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 100}
       >
-        <ScrollView contentContainerStyle={loginStyles.scrollContainer}>
-          <FormHeader
-            title="Check Out "
-            onClose={() => setIsFormEdit(false)}
-            onSave={handleCheckOut}
-            backgroundColor="#dc3545"
-          />
-
-          <TextInput
-            label="Title"
-            mode="outlined"
-            editable={false}
-            style={[formStyles.input, { marginBottom: 5 }]}
-            value={
-              fieldServiceData.name === ""
-                ? fieldServiceData.project_id
-                  ? fieldServiceData.project_id[1] +
-                    " " +
-                    fieldServiceData.x_studio_district
-                  : ""
-                : fieldServiceData.name
-            }
-            onChangeText={(e) => {
-              handleOnChangeData("name", e);
-            }}
-          />
-
-          <TextInput
-            multiline={true}
-            mode="outlined"
-            editable={false}
-            style={{
-              height: 150,
-              padding: 0,
-            }}
-            label="Address"
-            value={
-              fieldServiceData.partner_id
-                ? fieldServiceData.partner_id[1] +
-                  ", " +
-                  fieldServiceData.x_studio_address
-                : ""
-            }
-          />
-          <View
-            style={[
-              formStyles.rowTab,
-              {
-                marginBottom: 5,
-              },
-            ]}
-          >
+        <FormHeader
+          title="Check Out "
+          onClose={() => setIsFormEdit(false)}
+          onSave={handleCheckOut}
+          backgroundColor="#dc3545"
+        />
+        <View style={{ flex: 1, paddingTop: 0, marginTop: 0 }}>
+          <ScrollView contentContainerStyle={loginStyles.scrollContainer}>
             <TextInput
+              label="Title"
               mode="outlined"
-              label="Attendance"
-              style={{ flex: 1, textAlign: "right", width: "50%" }}
-              value={formatNumber(fieldServiceData.x_studio_attendant)}
-              onChangeText={(text) =>
-                handleOnChangeData("x_studio_attendant", text)
+              editable={false}
+              style={[formStyles.input, { marginBottom: 5 }]}
+              value={
+                fieldServiceData.name === ""
+                  ? fieldServiceData.project_id
+                    ? fieldServiceData.project_id[1] +
+                      " " +
+                      fieldServiceData.x_studio_district
+                    : ""
+                  : fieldServiceData.name
               }
-              keyboardType="decimal-pad"
-            />
-            <TextInput
-              mode="outlined"
-              label="Area"
-              style={{ flex: 1, textAlign: "right", width: "49%" }}
-              value={formatNumber(fieldServiceData.x_studio_luas_lahan_ha)}
-              onChangeText={(text) =>
-                handleOnChangeData("x_studio_luas_lahan_ha", text)
-              }
-              keyboardType="decimal-pad"
-            />
-          </View>
-
-          <TextInput
-            multiline={true}
-            mode="outlined"
-            style={{
-              height: 100,
-            }}
-            label="Notes"
-            value={fieldServiceData.description}
-            onChangeText={(text) => handleOnChangeData("description", text)}
-          />
-          {/* ======== Tabs Section ======== */}
-          <View style={{ marginTop: 10 }}>
-            {/* Tab Buttons */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                marginBottom: 10,
-                backgroundColor: "#f0f0f0",
-                borderRadius: 8,
-                padding: 4,
+              onChangeText={(e) => {
+                handleOnChangeData("name", e);
               }}
-            >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor:
-                    activeTab === "foto" ? "#0d6efd" : "transparent",
-                  color: activeTab === "foto" ? "white" : "black",
-                  padding: 10,
-                  borderRadius: 8,
-                  alignItems: "center",
-                }}
-                onPress={() => setActiveTab("foto")}
-              >
-                <Text
-                  style={{
-                    color: activeTab === "foto" ? "white" : "black",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Form Photo
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor:
-                    activeTab === "direct" ? "#0d6efd" : "transparent",
-                  padding: 10,
-                  borderRadius: 8,
-                  alignItems: "center",
-                }}
-                onPress={() => setActiveTab("direct")}
-              >
-                <Text
-                  style={{
-                    color: activeTab === "direct" ? "white" : "black",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Direct Selling
-                </Text>
-              </TouchableOpacity>
+            />
 
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor:
-                    activeTab === "demo" ? "#0d6efd" : "transparent",
-                  padding: 10,
-                  borderRadius: 8,
-                  alignItems: "center",
-                }}
-                onPress={() => setActiveTab("demo")}
-              >
-                <Text
-                  style={{
-                    color: activeTab === "demo" ? "white" : "black",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Demo
-                </Text>
-              </TouchableOpacity>
+            <TextInput
+              multiline={true}
+              mode="outlined"
+              editable={false}
+              style={{
+                height: 150,
+                padding: 0,
+              }}
+              label="Address"
+              value={
+                fieldServiceData.partner_id
+                  ? fieldServiceData.partner_id[1] +
+                    ", " +
+                    fieldServiceData.x_studio_address
+                  : ""
+              }
+            />
+            <View
+              style={[
+                formStyles.rowTab,
+                {
+                  marginBottom: 5,
+                },
+              ]}
+            >
+              <TextInput
+                mode="outlined"
+                label="Attendance"
+                style={{ flex: 1, textAlign: "right", width: "50%" }}
+                value={formatNumber(fieldServiceData.x_studio_attendant)}
+                onChangeText={(text) =>
+                  handleOnChangeData("x_studio_attendant", text)
+                }
+                keyboardType="decimal-pad"
+              />
+              <TextInput
+                mode="outlined"
+                label="Area"
+                style={{ flex: 1, textAlign: "right", width: "49%" }}
+                value={formatNumber(fieldServiceData.x_studio_luas_lahan_ha)}
+                onChangeText={(text) =>
+                  handleOnChangeData("x_studio_luas_lahan_ha", text)
+                }
+                keyboardType="decimal-pad"
+              />
             </View>
 
-            {/* Tab Content */}
-            {activeTab === "foto" && <FieldPhoto />}
-            {activeTab === "direct" && <FieldDirectSelling />}
+            <TextInput
+              multiline={true}
+              mode="outlined"
+              style={{
+                height: 100,
+              }}
+              label="Notes"
+              value={fieldServiceData.description}
+              onChangeText={(text) => handleOnChangeData("description", text)}
+            />
+            {/* ======== Tabs Section ======== */}
+            <View style={{ marginTop: 10 }}>
+              {/* Tab Buttons */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  marginBottom: 10,
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: 8,
+                  padding: 4,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    backgroundColor:
+                      activeTab === "foto" ? "#0d6efd" : "transparent",
+                    color: activeTab === "foto" ? "white" : "black",
+                    padding: 10,
+                    borderRadius: 8,
+                    alignItems: "center",
+                  }}
+                  onPress={() => setActiveTab("foto")}
+                >
+                  <Text
+                    style={{
+                      color: activeTab === "foto" ? "white" : "black",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Form Photo
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    backgroundColor:
+                      activeTab === "direct" ? "#0d6efd" : "transparent",
+                    padding: 10,
+                    borderRadius: 8,
+                    alignItems: "center",
+                  }}
+                  onPress={() => setActiveTab("direct")}
+                >
+                  <Text
+                    style={{
+                      color: activeTab === "direct" ? "white" : "black",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Direct Selling
+                  </Text>
+                </TouchableOpacity>
+                {fieldServiceData.project_id[1]
+                  .toLowerCase()
+                  .includes("demo") && (
+                  <TouchableOpacity
+                    style={{
+                      flex: 1,
+                      backgroundColor:
+                        activeTab === "demo" ? "#0d6efd" : "transparent",
+                      padding: 10,
+                      borderRadius: 8,
+                      alignItems: "center",
+                    }}
+                    onPress={() => setActiveTab("demo")}
+                  >
+                    <Text
+                      style={{
+                        color: activeTab === "demo" ? "white" : "black",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Demo
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
 
-            {activeTab === "demo" && <FieldDemo />}
-          </View>
-        </ScrollView>
+              {/* Tab Content */}
+              {activeTab === "foto" && <FieldPhoto />}
+              {activeTab === "direct" && <FieldDirectSelling />}
+
+              {fieldServiceData.project_id[1].toLowerCase().includes("demo") &&
+                activeTab === "demo" && <FieldDemo />}
+            </View>
+          </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

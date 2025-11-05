@@ -4,7 +4,7 @@ import SelectModalInput from "@/src/component/SelectModalInput";
 import { useFieldServiceContext } from "@/src/context/App/FieldServiceContext";
 import formStyles from "@/src/style/FormStyles";
 import React, { useState } from "react";
-import { Alert, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { IconButton, MD2Colors, Text, TextInput } from "react-native-paper";
 
 const FieldDirectSelling = () => {
@@ -22,8 +22,15 @@ const FieldDirectSelling = () => {
     quantity: "",
   });
 
+  const renderItem = ({ item }) => {
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {!item.x_studio_product_competitor && <Text>{item.label}</Text>}
+      </View>
+    );
+  };
   return (
-    <View style={{ marginTop: 5, marginHorizontal: 5 }}>
+    <View style={{ marginVertical: 0, paddingHorizontal: 5 }}>
       <View
         style={[
           formStyles.rowTab,
@@ -39,6 +46,73 @@ const FieldDirectSelling = () => {
             placeholder="Produk"
             data={productDemo}
             value={directSelling.product}
+            renderHeader={(close) => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  backgroundColor: "#0d6efd",
+                  padding: 12,
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 18 }}>Product</Text>
+                <TouchableOpacity onPress={close}>
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Tutup ✕
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            renderItem={(item, onSelect) => (
+              <>
+                {!item.competitor && (
+                  <TouchableOpacity
+                    onPress={() => onSelect(item)}
+                    style={{
+                      padding: 15,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderColor: "#eee",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        width: "80%",
+                        fontWeight: "bold",
+                        width: "80%",
+                      }}
+                    >
+                      {item.label}
+                    </Text>
+                    <Text
+                      style={{ fontSize: 16, width: "20%", textAlign: "right" }}
+                    >
+                      {item.competitor}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+            renderFooter={(close) => (
+              <View style={{ marginTop: 10 }}>
+                <TouchableOpacity
+                  onPress={close}
+                  style={{
+                    backgroundColor: "#0d6efd",
+                    padding: 12,
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Tutup
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             onSelect={(value) =>
               setDirectSelling((prev) => ({
                 ...prev,

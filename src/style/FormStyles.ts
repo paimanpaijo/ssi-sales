@@ -470,7 +470,8 @@ const formStyles = StyleSheet.create({
   },
 
   radioText: {
-    fontSize: 16,
+    fontSize: 13,
+    marginLeft: 3,
   },
   listitem: {
     padding: 5,
@@ -488,7 +489,7 @@ const formStyles = StyleSheet.create({
   },
   fabBlue: {
     position: "absolute",
-    bottom: 65,
+    bottom: 110,
     right: 20,
 
     backgroundColor: "blue",
@@ -507,6 +508,24 @@ const formStyles = StyleSheet.create({
     flexDirection: "row",
 
     marginRight: 10,
+  },
+  radioContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 8,
+  },
+
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#007AFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioSelected: {
+    backgroundColor: "#007AFF",
   },
 });
 

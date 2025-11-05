@@ -1,6 +1,7 @@
 /** @format */
 
 import MonthYearPickerModal from "@/src/component/MonthYearPickerModal";
+import PagingMobile from "@/src/component/PagingMobile";
 import { useFieldServiceContext } from "@/src/context/App/FieldServiceContext";
 import { formatDateForDisplay, formatDateIDN } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
@@ -28,6 +29,9 @@ const FieldServiceTable = () => {
     isCheckIn,
   } = useFieldServiceContext();
   const [showPicker, setShowPicker] = useState(false);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
   const renderItemOrder = ({ item, index }) => (
     <Card style={{ paddingHorizontal: 3, marginBottom: 5 }}>
       <Card.Content style={{ paddingHorizontal: 2 }}>
@@ -216,7 +220,9 @@ const FieldServiceTable = () => {
 
   return (
     <View style={formStyles.wrapper}>
-      <Text style={formStyles.Header}>Field Service</Text>
+      <Text style={[formStyles.Header, { marginBottom: 0 }]}>
+        Field Service
+      </Text>
       <View style={{ paddingHorizontal: 15 }}>
         <Button
           mode="contained-tonal"
@@ -243,7 +249,7 @@ const FieldServiceTable = () => {
           }}
         />
       </View>
-      <View style={{ maxHeight: 700 }}>
+      <View style={{ height: 670 }}>
         <FlatList
           data={fieldServiceList}
           renderItem={renderItemOrder}
@@ -251,6 +257,11 @@ const FieldServiceTable = () => {
           keyExtractor={(item, index) =>
             item.id?.toString() || index.toString()
           }
+        />
+        <PagingMobile
+          currentPage={page}
+          totalPage={totalPage}
+          onPageChange={(pg) => handlePageChange(pg)}
         />
       </View>
       {!isCheckIn && (

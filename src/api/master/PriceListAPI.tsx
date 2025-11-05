@@ -24,7 +24,7 @@ export async function getPriceList(type) {
 export async function getPriceListDetail(id, prod_id) {
   const url2 =
     apiUrlOdoo + "/pricelist/pricelistitem?id=" + id + "&prod_id=" + prod_id;
-  console.log(url2);
+
   const response = await axios.get(url2);
 
   return response.data;

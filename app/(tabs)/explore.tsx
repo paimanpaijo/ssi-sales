@@ -1,20 +1,40 @@
 /** @format */
+import { useAuth } from "@/src/context/AuthContext";
 import { router } from "expo-router";
 import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const menuItems = [
-  { id: "1", title: "Sales Order", icon: "📊", route: "/sales/" },
-  { id: "2", title: "Activity Tracking", icon: "📦", route: "/fieldservice/" },
-  { id: "3", title: "Customer", icon: "👥", route: "/customers" },
-  // { id: "5", title: "Reports", icon: "📑", route: "//report" },
+  { id: "1", title: "Sales Order", icon: "📊", route: "/sales/", role: "all" },
+  {
+    id: "2",
+    title: "Activity Tracking",
+    icon: "📦",
+    route: "/fieldservice/",
+    role: "all",
+  },
+  { id: "3", title: "Customer", icon: "👥", route: "/customer", role: "all" },
+  {
+    id: "4",
+    title: "Approved PO",
+    icon: "📋",
+    route: "/check",
+    role: "district sales manager",
+  },
 ];
 
 export default function ExploreScreen() {
+  const { user } = useAuth();
+  const jobTitle = user?.job_title?.toLowerCase() ?? "";
+
+  const filteredMenu = menuItems.filter(
+    (item) => item.role === jobTitle || item.role === "all"
+  );
+
   return (
     <FlatList
       backgroundColor={""}
       showsVerticalScrollIndicator={true}
-      data={menuItems}
+      data={filteredMenu}
       numColumns={4} // grid 2 kolom
       contentContainerStyle={styles.container}
       keyExtractor={(item) => item.id}

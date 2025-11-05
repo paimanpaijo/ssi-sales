@@ -4,10 +4,12 @@ import { getCustomerList } from "@/src/api/master/CustomerAPI";
 import { getProductDemo } from "@/src/api/master/ProductAPI";
 import {
   getFieldService,
+  getFieldServiceDetail,
   getFieldServiceProject,
   submitFieldService,
   updateFieldService,
 } from "@/src/api/transaksi/FieldServiceAPI";
+import { getHoursDecimal } from "@/src/library/Utility";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useAuth } from "../AuthContext";
@@ -36,9 +38,9 @@ export const FieldServiceContextProvider = ({ children }) => {
     x_studio_regency_1: "",
     x_studio_province: "",
     x_studio_address: "",
-    partner_id: "",
+    partner_id: 0,
     name: "",
-    stage_id: 27,
+    stage_id: 11,
     planned_date_begin: new Date().toISOString().slice(0, 19).replace("T", " "),
     project_id: 0,
     description: "",
@@ -65,6 +67,7 @@ export const FieldServiceContextProvider = ({ children }) => {
   const [fieldService, setFieldService] = useState(initialState);
   const [count_notcheckout, setCountNotCheckout] = useState(0);
   const [productDemo, setProductDemo] = useState([]);
+
   const [detailDemo, setDetailDemo] = useState([]);
   const [detailDirect, setDetailDirect] = useState([]);
 
@@ -103,7 +106,7 @@ export const FieldServiceContextProvider = ({ children }) => {
       res.data.map((item) => {
         cust.push({
           id: item.id,
-          label: item.name,
+          label: item.complete_name,
           value: item.id,
           x_studio_type: item.x_studio_type,
         });
@@ -128,6 +131,7 @@ export const FieldServiceContextProvider = ({ children }) => {
           id: item.id,
           label: item.x_name,
           value: item.id,
+          competitor: item.x_studio_product_competitor,
         });
       });
 
@@ -139,13 +143,37 @@ export const FieldServiceContextProvider = ({ children }) => {
     if (!user) {
       return;
     }
-    getFieldService(user.id, 0, 0, page, 10).then((res) => {
-      setIsCheckIn(res.count_notcheckout > 0);
-      setFieldserviceList(res.data);
-    });
-  }, []);
+    getFieldService(selectMonth, selectYear, user.id, 0, 0, page, 10).then(
+      (res) => {
+        setIsCheckIn(res.count_notcheckout > 0);
+        setFieldserviceList(res.data);
+        setTotalPage(res.count_page);
+      }
+    );
+  }, [page, selectMonth, selectYear]);
 
   const handleSave = () => {
+    if (
+      !fieldService.partner_id ||
+      !fieldService.project_id ||
+      !fieldService.planned_date_begin
+    ) {
+      Alert.alert(
+        "Error",
+        "Please fill all required field (customer, project, date)",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    if (fieldService.partner_id === 0 || fieldService.project_id === 0) {
+      Alert.alert(
+        "Error",
+        "Please fill all required field (customer, project, date)",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     setFieldService((prev) => ({
       ...prev,
     }));
@@ -162,7 +190,15 @@ export const FieldServiceContextProvider = ({ children }) => {
           submitFieldService(fieldService).then((res) => {
             if (res.success) {
               Alert.alert("Success", "Data has been saved", [{ text: "OK" }]);
-              getFieldService(user.id, 0, 0, page, 10).then((res) => {
+              getFieldService(
+                selectMonth,
+                selectYear,
+                user.id,
+                0,
+                0,
+                page,
+                10
+              ).then((res) => {
                 setIsCheckIn(res.count_notcheckout > 0);
                 setFieldserviceList(res.data);
                 setFieldService(initialState);
@@ -177,6 +213,17 @@ export const FieldServiceContextProvider = ({ children }) => {
     ]);
   };
   const handleCheckOut = () => {
+    const dtl = {
+      description: fieldServiceData.name,
+      hours: getHoursDecimal(
+        fieldServiceData.x_studio_activity_date,
+        new Date().toISOString().slice(0, 19).replace("T", " ")
+      ),
+      employee_id: user.id,
+    };
+    const timesheet = [];
+
+    timesheet.push(dtl);
     const data = {
       id: fieldServiceData.id,
       x_studio_end_time: new Date()
@@ -189,7 +236,8 @@ export const FieldServiceContextProvider = ({ children }) => {
       x_studio_image: fieldServiceData.x_studio_image,
       direct_selling_items: detailDirect,
       demo: detailDemo,
-      stage_id: 28,
+      stage_id: 12,
+      timesheet_entries: timesheet,
     };
 
     Alert.alert("Confirm", "Are you sure to submit ?", [
@@ -204,7 +252,15 @@ export const FieldServiceContextProvider = ({ children }) => {
           updateFieldService(data).then((res) => {
             if (res.success) {
               Alert.alert("Success", res.message, [{ text: "OK" }]);
-              getFieldService(user.id, 0, 0, page, 10).then((res) => {
+              getFieldService(
+                selectMonth,
+                selectYear,
+                user.id,
+                0,
+                0,
+                page,
+                10
+              ).then((res) => {
                 setIsCheckIn(res.count_notcheckout > 0);
                 setFieldserviceList(res.data);
               });
@@ -213,7 +269,6 @@ export const FieldServiceContextProvider = ({ children }) => {
 
               setIsForm(false);
             } else {
-              console.log(res);
               Alert.alert("Error", res.message, [{ text: "OK" }]);
             }
           });
@@ -227,7 +282,9 @@ export const FieldServiceContextProvider = ({ children }) => {
   };
 
   const ShowFieldService = (item) => {
-    console.log("item", item);
+    getFieldServiceDetail(item.id).then((res) => {
+      setFieldServiceData(res.data);
+    });
   };
   const handleOnChange = (nm, vl) => {
     setFieldService((prev) => ({
