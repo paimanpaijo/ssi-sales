@@ -238,7 +238,7 @@ const formStyles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     color: MD2Colors.white,
-    backgroundColor: MD2Colors.green900,
+    backgroundColor: MD2Colors.blue900,
     marginBottom: 10,
   },
   SubHeader: {

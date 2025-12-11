@@ -1,15 +1,15 @@
 /** @format */
 import { Stack } from "expo-router";
 
-export default function SalesLayout() {
+export default function InvoiceLayout() {
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
           headerShown: false,
-          title: "Sales Order",
-          headerTitle: "Sales Order sales",
+          title: "Invoices",
+          headerTitle: "Invoices",
           headerTitleStyle: { fontSize: 16, padding: 10, color: "white" },
         }}
       />

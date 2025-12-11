@@ -69,17 +69,57 @@ export const getFieldServiceProject = async () => {
 
 export const updateFieldService = async (data) => {
   const url = apiUrlOdoo + "/fieldservice/update";
-  const response = await axios.post(url, data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    const response = await axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "500",
+      message: "Internal Server Error",
+      success: false,
+    };
+  }
 };
 
 export const getFieldServiceDetail = async (id) => {
   const url = apiUrlOdoo + "/fieldservice/" + id;
+
+  const response = await axios.get(url);
+  return response.data;
+};
+
+export const getPlaningactual = async (
+  month,
+  year,
+  sales_exec,
+  mode,
+  quarter
+) => {
+  let monthstr = "";
+  let quarterstr = "";
+  if (mode === "month") {
+    monthstr = `&month=${month}`;
+  }
+  if (mode === "quarter") {
+    quarterstr = `&quarter=${quarter}`;
+  }
+  const url =
+    apiUrlOdoo +
+    "/activityplan?mode=" +
+    mode +
+    monthstr +
+    "&year=" +
+    year +
+    "&sales_exec=" +
+    sales_exec +
+    quarterstr;
+
   const response = await axios.get(url);
   return response.data;
 };

@@ -28,7 +28,7 @@ export default function TabsLayout() {
             ),
           }}
         />
-        {/* 👇 Tambahkan ini */}
+
         <Tabs.Screen
           name="explore"
           options={{

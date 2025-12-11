@@ -1,5 +1,6 @@
 /** @format */
 
+import { router } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getFieldService } from "../api/transaksi/FieldServiceAPI";
 import { SummarySalesAPI } from "../api/transaksi/SalesAPI";
@@ -44,6 +45,8 @@ export const HomeContextProvider = ({ children }) => {
       ).then((res) => {
         setFieldserviceList(res.data);
       });
+    } else {
+      router.replace("/login");
     }
   }, []);
   return (

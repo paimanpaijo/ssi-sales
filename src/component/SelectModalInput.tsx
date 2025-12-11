@@ -80,7 +80,14 @@ const SelectModalInput: React.FC<Props> = ({
     closeModal();
     onSelect(item);
   };
+  React.useEffect(() => {
+    if (!value || !data.length) return;
 
+    const found = data.find((item) => String(item.id) === String(value));
+    if (found) {
+      setSelectedLabel(found.label ?? String(found.id));
+    }
+  }, [value, data]);
   const defaultRenderItem: ListRenderItem<Item> = ({ item }) => (
     <TouchableOpacity
       style={[styles.item, style?.item]}

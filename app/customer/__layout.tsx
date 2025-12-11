@@ -9,7 +9,7 @@ export default function SalesLayout() {
         options={{
           headerShown: false,
           title: "Customer",
-          headerTitle: "Customers",
+          headerTitle: "Customer",
 
           headerTitleStyle: { fontSize: 16, padding: 10, color: "white" },
         }}

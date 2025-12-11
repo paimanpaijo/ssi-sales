@@ -63,7 +63,6 @@ export default function RootLayout() {
           <AuthProvider>
             <SalesOrderContextProvider>
               <FieldServiceContextProvider>
-                {/* Komponen yang melakukan proteksi route */}
                 <AppContent />
               </FieldServiceContextProvider>
             </SalesOrderContextProvider>
@@ -117,8 +116,20 @@ function AppContent() {
         options={{ headerShown: true, title: "Customer" }}
       />
       <Stack.Screen
+        name="invoice/index"
+        options={{ headerShown: true, title: "Collection" }}
+      />
+      <Stack.Screen
+        name="planing"
+        options={{ headerShown: true, title: "Planning and Actuals" }}
+      />
+      <Stack.Screen
         name="modal"
         options={{ presentation: "modal", title: "Modal" }}
+      />
+      <Stack.Screen
+        name="fieldservicedtl"
+        options={{ headerShown: true, title: "Detail Field Service" }}
       />
     </Stack>
   );

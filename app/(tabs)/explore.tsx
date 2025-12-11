@@ -1,20 +1,43 @@
 /** @format */
 import { useAuth } from "@/src/context/AuthContext";
 import { router } from "expo-router";
-import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const ITEM_SIZE = SCREEN_WIDTH / 4 - 24; // dikurangi margin
 
 const menuItems = [
-  { id: "1", title: "Sales Order", icon: "📊", route: "/sales/", role: "all" },
+  { id: "1", title: "Sales Order", icon: "🛒", route: "/sales/", role: "all" },
   {
     id: "2",
+    title: "Planning and Actuals",
+    icon: "📊",
+    route: "/planing/",
+    role: "all",
+  },
+  {
+    id: "3",
     title: "Activity Tracking",
     icon: "📦",
     route: "/fieldservice/",
     role: "all",
   },
-  { id: "3", title: "Customer", icon: "👥", route: "/customer", role: "all" },
+  { id: "4", title: "Costumer", icon: "👥", route: "/customer", role: "all" },
   {
-    id: "4",
+    id: "5",
+    title: "Collection",
+    icon: "🧾",
+    route: "/invoice/",
+    role: "all",
+  },
+  {
+    id: "6",
     title: "Approved PO",
     icon: "📋",
     route: "/check",
@@ -56,19 +79,21 @@ const styles = StyleSheet.create({
     padding: 1,
   },
   card: {
-    flex: 1,
+    width: ITEM_SIZE,
+    height: ITEM_SIZE + 10,
     margin: 12,
     padding: 5,
     borderRadius: 16,
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
-    elevation: 3, // shadow android
+    elevation: 3,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
+
   icon: {
     fontSize: 15,
     marginBottom: 1,

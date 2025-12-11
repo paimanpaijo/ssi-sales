@@ -64,3 +64,37 @@ export const SummarySalesAPI = async (user_id, month, year) => {
   const response = await axios.get(url);
   return response.data;
 };
+
+export const getSummaryInvoice = async (user_id, month, year) => {
+  let se = "";
+  let mth = "";
+  if (user_id !== 0) {
+    se = `&sales_exec=${user_id}`;
+  }
+  if (month !== 0) {
+    mth = `&month=${month}`;
+  }
+  const url = apiUrlOdoo + `/sales/invoicesumary?year=${year}` + se + mth;
+
+  const response = await axios.get(url);
+  return response.data;
+};
+
+export const getListInvoice = async (user_id, month, year, page, limit) => {
+  let se = "";
+  let mth = "";
+  if (user_id !== 0) {
+    se = `&sales_exec=${user_id}`;
+  }
+  if (month !== 0) {
+    mth = `&month=${month}`;
+  }
+  const url =
+    apiUrlOdoo +
+    `/sales/invoicelist?year=${year}&limit=${limit}&page=${page}` +
+    se +
+    mth;
+
+  const response = await axios.get(url);
+  return response.data;
+};

@@ -5,6 +5,7 @@ import PagingMobile from "@/src/component/PagingMobile";
 import { useFieldServiceContext } from "@/src/context/App/FieldServiceContext";
 import { formatDateForDisplay, formatDateIDN } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { Button, Card, FAB } from "react-native-paper";
@@ -196,10 +197,8 @@ const FieldServiceTable = () => {
         {item.x_studio_end_time ? (
           <Button
             mode="contained"
-            style={{ marginRight: 10, backgroundColor: "blue" }}
-            onPress={() => {
-              ShowFieldService(item);
-            }}
+            style={{ marginRight: 10, backgroundColor: "green" }}
+            onPress={() => router.push("/fieldservicedtl/" + item.id)}
           >
             View
           </Button>
@@ -270,7 +269,7 @@ const FieldServiceTable = () => {
           color="white"
           size="30"
           onPress={() => setIsForm(true)}
-          style={formStyles.fabBlue}
+          style={[formStyles.fabBlue, { bottom: 160 }]}
         />
       )}
     </View>

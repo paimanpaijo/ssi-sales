@@ -55,7 +55,7 @@ export const toTitleCase = (phrase) => {
 };
 
 export const formatDateIDN = (date) => {
-  return format(new Date(date), "dd MMMM yyyy", { locale: id });
+  return format(new Date(date), "dd MMM yyyy", { locale: id });
 };
 export const formatDateTimeISO = (date) => {
   return date.format("YYYY-MM-DD");
@@ -65,6 +65,7 @@ export const formatNumber = (number) => {
   number = parseFloat(number);
   return new Intl.NumberFormat("id-ID", {
     maximumSignificantDigits: 5,
+    minimumFractionDigits: 2,
   }).format(number);
 };
 

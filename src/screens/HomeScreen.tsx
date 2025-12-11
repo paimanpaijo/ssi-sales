@@ -1,5 +1,6 @@
 /** @format */
 
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
@@ -157,7 +158,7 @@ const HomeScreen = () => {
             { backgroundColor: MD2Colors.blue50, flex: 1, padding: 8 },
           ]}
         >
-          <Card.Title title={new Date().getFullYear() + " Sales"} />
+          <Card.Title title={"YTD Sales " + new Date().getFullYear()} />
           <Card.Content>
             <Text style={styles.cardText}>
               {"Rp." +
@@ -169,7 +170,7 @@ const HomeScreen = () => {
         </Card>
 
         <Card style={[styles.card, { backgroundColor: MD2Colors.brown50 }]}>
-          <Card.Title title="Monthly Sales" />
+          <Card.Title title="MTD Sales" />
           <Card.Content>
             <Text style={styles.cardText}>
               {"Rp." +
@@ -214,7 +215,9 @@ const HomeScreen = () => {
 
               <Pressable
                 style={styles.detailButton}
-                onPress={() => console.log("Lihat detail", selectedItem)}
+                onPress={() =>
+                  router.push("/fieldservicedtl/" + selectedItem.id)
+                }
               >
                 <Text style={styles.detailButtonText}>Lihat detail</Text>
               </Pressable>
