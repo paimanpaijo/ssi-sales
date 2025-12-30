@@ -1,16 +1,19 @@
 /** @format */
 
 import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+
 import { id } from "date-fns/locale";
 
+const WIB_OFFSET = 7 * 60; // menit
 export const validateEmail = (email) => {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
 };
 
-export const validateNumber = (number) => {
-  return number.match(/^[0-9]+$/);
+export const validateNumber = (str) => {
+  return /^-?\d+(\.\d+)?$/.test(str);
 };
 
 export const validatePassword = (password) => {
@@ -62,11 +65,15 @@ export const formatDateTimeISO = (date) => {
 };
 
 export const formatNumber = (number) => {
-  number = parseFloat(number);
-  return new Intl.NumberFormat("id-ID", {
-    maximumSignificantDigits: 5,
-    minimumFractionDigits: 2,
-  }).format(number);
+  if (validateNumber(number)) {
+    number = parseFloat(number);
+    return new Intl.NumberFormat("id-ID", {
+      maximumSignificantDigits: 5,
+      minimumFractionDigits: 2,
+    }).format(number);
+  } else {
+    return 0;
+  }
 };
 
 export const generateRandomColors = (count) => {
@@ -206,4 +213,47 @@ export const formatPhoneNumber = (number) => {
   }
 
   return clean;
+};
+
+// =======================
+// UTC → WIB (Date object)
+// =======================
+export const utcToWIB = (date: Date | string) => {
+  const d = new Date(date);
+  return new Date(d.getTime() + WIB_OFFSET * 60 * 1000);
+};
+
+// =======================
+// WIB → UTC (Date object)
+// =======================
+export const wibToUTC = (date: Date) => {
+  return new Date(date.getTime() - WIB_OFFSET * 60 * 1000);
+};
+
+// =======================
+// DISPLAY (WIB)
+// =======================
+export const formatDateForDisplayWIB = (date: Date | string) => {
+  return format(utcToWIB(date), "dd MMM yyyy HH:mm", {
+    locale: id,
+  });
+};
+export const formatDateForDisplayStd = (date: Date | string) => {
+  return format(date, "dd MMM yyyy HH:mm", {
+    locale: id,
+  });
+};
+export const formatDateForDisplayUTC = (date: Date | string) => {
+  return formatInTimeZone(date, "UTC", "dd MMM yyyy HH:mm", { locale: id });
+};
+
+// =======================
+// BACKEND (WIB STRING)
+// =======================
+export const formatDateForBackendWIB = (date: Date) => {
+  return format(date, "yyyy-MM-dd HH:mm:ss");
+};
+// ===== PARSE DARI BACKEND (UTC → WIB) =====
+export const parseBackendDateToWIB = (date: string) => {
+  return toZonedTime(new Date(date), WIB_TZ);
 };

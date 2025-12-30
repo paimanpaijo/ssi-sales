@@ -13,11 +13,13 @@ export const getFieldService = async (
   status_id,
   cust_id,
   page,
-  limit
+  limit,
+  project_name = ""
 ) => {
   let sts = "";
   let se = "";
   let cust = "";
+  let projectname = "";
 
   if (month !== 0) {
     month = `&month=${month}`;
@@ -35,6 +37,9 @@ export const getFieldService = async (
   if (cust_id !== 0) {
     cust = `&cust_id=${cust_id}`;
   }
+  if (project_name !== "") {
+    projectname = `&project_name=${project_name}`;
+  }
   const url =
     apiUrlOdoo +
     "/fieldservice?page=" +
@@ -45,7 +50,8 @@ export const getFieldService = async (
     sts +
     month +
     year +
-    cust;
+    cust +
+    projectname;
 
   const response = await axios.get(url);
   return response.data;
@@ -119,6 +125,36 @@ export const getPlaningactual = async (
     "&sales_exec=" +
     sales_exec +
     quarterstr;
+
+  const response = await axios.get(url);
+  return response.data;
+};
+
+export const getFieldServiceDemo = async (
+  month,
+  year,
+  se_id,
+
+  page,
+  limit
+) => {
+  if (month !== 0) {
+    month = `&month=${month}`;
+  }
+  if (year !== 0) {
+    year = `&year=${year}`;
+  }
+
+  const url =
+    apiUrlOdoo +
+    "/fieldservice/demo/list/sales/" +
+    se_id +
+    " ?page=" +
+    page +
+    "&limit=" +
+    limit +
+    month +
+    year;
 
   const response = await axios.get(url);
   return response.data;

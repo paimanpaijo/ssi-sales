@@ -120,6 +120,10 @@ function AppContent() {
         options={{ headerShown: true, title: "Collection" }}
       />
       <Stack.Screen
+        name="demomanagement/index"
+        options={{ headerShown: true, title: "Demo Management" }}
+      />
+      <Stack.Screen
         name="planing"
         options={{ headerShown: true, title: "Planning and Actuals" }}
       />

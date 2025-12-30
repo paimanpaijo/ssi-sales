@@ -1,49 +1,18 @@
 /** @format */
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   ListRenderItem,
   Modal,
   StyleSheet,
   Text,
-  TextInput,
-  TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
 } from "react-native";
-import { MD2Colors } from "react-native-paper";
+import { MD2Colors, TextInput } from "react-native-paper";
 
-type Item = {
-  id: string | number;
-  label?: string | null;
-  [k: string]: any;
-};
-
-type StyleProps = {
-  container?: ViewStyle;
-  input?: TextStyle;
-  modalContainer?: ViewStyle;
-  searchInput?: TextStyle;
-  item?: ViewStyle;
-  itemText?: TextStyle;
-  headerText?: TextStyle;
-  emptyText?: TextStyle;
-};
-
-type Props = {
-  data?: Item[]; // default []
-  onSelect: (item: Item) => void;
-  placeholder?: string;
-  renderItem?: (item: Item, onSelect: (item: Item) => void) => React.ReactNode;
-  renderHeader?: (closeModal: () => void) => React.ReactNode;
-  renderFooter?: (closeModal: () => void) => React.ReactNode;
-  value?: string;
-  label?: string;
-  style?: StyleProps; // <-- custom style overrides
-  modalProps?: Partial<React.ComponentProps<typeof Modal>>; // pass-thru modal props
-};
+// ... (Type definitions tetap sama seperti kode awal kamu)
 
 const SelectModalInput: React.FC<Props> = ({
   data = [],
@@ -56,12 +25,19 @@ const SelectModalInput: React.FC<Props> = ({
   value,
   style,
   modalProps,
+  visible,
+  onClose,
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [internalVisible, setInternalVisible] = useState(false);
+  const modalVisible = visible ?? internalVisible;
+
+  const closeModal = () => {
+    if (onClose) onClose();
+    else setInternalVisible(false);
+  };
+
   const [selectedLabel, setSelectedLabel] = useState("");
   const [searchText, setSearchText] = useState("");
-
-  const closeModal = () => setModalVisible(false);
 
   const normalizedSearch = (searchText ?? "").toString().trim().toLowerCase();
 
@@ -70,8 +46,8 @@ const SelectModalInput: React.FC<Props> = ({
     if (!normalizedSearch) return data;
     return data.filter((item) => {
       if (!item) return false;
-      const label = (item.label ?? "").toString();
-      return label.toLowerCase().includes(normalizedSearch);
+      const labelStr = (item.label ?? "").toString();
+      return labelStr.toLowerCase().includes(normalizedSearch);
     });
   }, [data, normalizedSearch]);
 
@@ -80,14 +56,19 @@ const SelectModalInput: React.FC<Props> = ({
     closeModal();
     onSelect(item);
   };
-  React.useEffect(() => {
-    if (!value || !data.length) return;
 
+  // Sync label saat value dari luar berubah
+  useEffect(() => {
+    if (value === undefined || value === null || !data.length) {
+      if (!value) setSelectedLabel(""); // Reset jika value kosong
+      return;
+    }
     const found = data.find((item) => String(item.id) === String(value));
     if (found) {
       setSelectedLabel(found.label ?? String(found.id));
     }
   }, [value, data]);
+
   const defaultRenderItem: ListRenderItem<Item> = ({ item }) => (
     <TouchableOpacity
       style={[styles.item, style?.item]}
@@ -101,44 +82,44 @@ const SelectModalInput: React.FC<Props> = ({
 
   return (
     <View style={[styles.container, style?.container]}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <View>
         <TextInput
-          style={[styles.input, style?.input]}
-          value={selectedLabel || value}
-          placeholder={placeholder || "Pilih item"}
-          editable={false}
-          pointerEvents="none"
+          mode="outlined"
           label={label}
+          value={selectedLabel} // Gunakan selectedLabel agar TextInput tahu ada isinya
+          placeholder={placeholder}
+          editable={false}
+          right={<TextInput.Icon icon="chevron-down" />}
+          style={[styles.paperInput, style?.input]}
         />
-      </TouchableOpacity>
+        {/* Overlay tombol transparan agar TextInput tidak fokus tapi modal terbuka */}
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          onPress={() =>
+            visible === undefined ? setInternalVisible(true) : null
+          }
+        />
+      </View>
 
       <Modal visible={modalVisible} animationType="slide" {...modalProps}>
+        {/* Bagian Header Modal */}
         {renderHeader ? (
           renderHeader(closeModal)
         ) : (
-          <Text
-            style={[
-              {
-                fontSize: 20,
-                fontWeight: "bold",
-                textAlign: "center",
-                backgroundColor: MD2Colors.lightBlueA700,
-                color: "white",
-                padding: 10,
-              },
-              style?.headerText,
-            ]}
-          >
-            {placeholder || "Pilih Item"}
-          </Text>
+          <View style={styles.defaultHeader}>
+            <Text style={[styles.headerText, style?.headerText]}>
+              {placeholder || "Pilih Item"}
+            </Text>
+          </View>
         )}
 
         <View style={[styles.modalContainer, style?.modalContainer]}>
           <TextInput
-            style={[styles.searchInput, style?.searchInput]}
-            placeholder="Search..."
+            mode="outlined"
+            label="Cari..."
             value={searchText}
             onChangeText={setSearchText}
+            style={{ marginBottom: 10 }}
           />
 
           <FlatList
@@ -167,33 +148,36 @@ const SelectModalInput: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  container: { width: "100%" },
-  input: {
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 5,
+  container: { width: "100%", marginBottom: 10 },
+  paperInput: {
+    backgroundColor: "white",
+  },
+  defaultHeader: {
+    backgroundColor: MD2Colors.lightBlueA700,
+    padding: 15,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
   },
   modalContainer: {
     flex: 1,
     padding: 20,
-  },
-  searchInput: {
-    borderWidth: 1,
-    padding: 10,
-
-    borderRadius: 5,
+    backgroundColor: "white",
   },
   item: {
     padding: 15,
     borderBottomWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#eee",
   },
   itemText: {
-    color: "#000",
+    color: "#333",
+    fontSize: 16,
   },
   emptyText: {
-    color: "#666",
+    color: "#999",
   },
 });
 

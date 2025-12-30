@@ -12,8 +12,12 @@ export const getProduct = async () => {
   const response = await axios.get(url);
   return response.data;
 };
-export const getProductDemo = async () => {
-  const url = apiUrlOdoo + "/fieldservice/product/list";
+export const getProductDemo = async (iscompetitor) => {
+  let iscompetitorstr = "";
+  if (iscompetitor != null && iscompetitor !== "all") {
+    iscompetitorstr = "?is_competitor=" + iscompetitor;
+  }
+  const url = apiUrlOdoo + "/fieldservice/product/list" + iscompetitorstr;
 
   const response = await axios.get(url);
   return response.data;

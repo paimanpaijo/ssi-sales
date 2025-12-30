@@ -21,7 +21,7 @@ const FieldDirectSelling = () => {
     product: "",
     quantity: "",
   });
-
+  console.log("detailDirect", productDemo);
   const renderItem = ({ item }) => {
     return (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -66,34 +66,28 @@ const FieldDirectSelling = () => {
             )}
             renderItem={(item, onSelect) => (
               <>
-                {!item.competitor && (
-                  <TouchableOpacity
-                    onPress={() => onSelect(item)}
+                <TouchableOpacity
+                  onPress={() => onSelect(item)}
+                  style={{
+                    padding: 15,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    borderBottomWidth: 1,
+                    borderColor: "#eee",
+                  }}
+                >
+                  <Text
                     style={{
-                      padding: 15,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      borderBottomWidth: 1,
-                      borderColor: "#eee",
+                      fontSize: 16,
+
+                      fontWeight: "bold",
+                      width: "70%",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        width: "80%",
-                        fontWeight: "bold",
-                        width: "80%",
-                      }}
-                    >
-                      {item.label}
-                    </Text>
-                    <Text
-                      style={{ fontSize: 16, width: "20%", textAlign: "right" }}
-                    >
-                      {item.competitor}
-                    </Text>
-                  </TouchableOpacity>
-                )}
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+                )
               </>
             )}
             renderFooter={(close) => (

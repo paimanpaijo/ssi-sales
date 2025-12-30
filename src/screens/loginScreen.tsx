@@ -228,7 +228,7 @@ export default function LoginScreen() {
             />
             <View style={loginStyles.footer}>
               <Text variant="bodySmall" style={{ color: "white" }}>
-                Versi 1.0
+                Versi 1.1
               </Text>
               <Text variant="bodySmall" style={{ color: "white" }}>
                 &copy; 2025 Shriram Seed Indonesia™

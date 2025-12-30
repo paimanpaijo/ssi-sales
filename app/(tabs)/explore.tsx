@@ -10,13 +10,13 @@ import {
 } from "react-native";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const ITEM_SIZE = SCREEN_WIDTH / 4 - 24; // dikurangi margin
+const ITEM_SIZE = SCREEN_WIDTH / 3 - 24; // dikurangi margin
 
 const menuItems = [
   { id: "1", title: "Sales Order", icon: "🛒", route: "/sales/", role: "all" },
   {
     id: "2",
-    title: "Planning and Actuals",
+    title: "Planning & Actuals",
     icon: "📊",
     route: "/planing/",
     role: "all",
@@ -24,20 +24,27 @@ const menuItems = [
   {
     id: "3",
     title: "Activity Tracking",
-    icon: "📦",
+    icon: "🛻",
     route: "/fieldservice/",
     role: "all",
   },
-  { id: "4", title: "Costumer", icon: "👥", route: "/customer", role: "all" },
   {
-    id: "5",
+    id: "4",
+    title: "Demo Management",
+    icon: "🗓️",
+    route: "/demomanagement/",
+    role: "all",
+  },
+  { id: "5", title: "Costumer", icon: "👥", route: "/customer", role: "all" },
+  {
+    id: "6",
     title: "Collection",
     icon: "🧾",
     route: "/invoice/",
     role: "all",
   },
   {
-    id: "6",
+    id: "7",
     title: "Approved PO",
     icon: "📋",
     route: "/check",
@@ -58,7 +65,7 @@ export default function ExploreScreen() {
       backgroundColor={""}
       showsVerticalScrollIndicator={true}
       data={filteredMenu}
-      numColumns={4} // grid 2 kolom
+      numColumns={3} // grid 2 kolom
       contentContainerStyle={styles.container}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
@@ -95,11 +102,11 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    fontSize: 15,
+    fontSize: 35,
     marginBottom: 1,
   },
   title: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
   },

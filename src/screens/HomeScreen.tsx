@@ -130,6 +130,7 @@ const HomeScreen = () => {
         ref={mapRef}
         style={styles.map}
         region={region}
+        mapType="satellite" // ⬅️ default satelit
         onRegionChangeComplete={setRegion}
       >
         {fieldservicesList?.length > 0 &&
