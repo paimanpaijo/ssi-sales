@@ -1,6 +1,6 @@
 /** @format */
 
-import { getFieldService } from "@/src/api/transaksi/FieldServiceAPI";
+import { getFieldService, getFieldServiceDemo } from "@/src/api/transaksi/FieldServiceAPI";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 const DemoManagementContext = createContext();
@@ -19,15 +19,12 @@ export const DemoManagementContextProvider = ({ children }) => {
   const [isForm, setIsForm] = useState(false);
 
   useEffect(() => {
-    getFieldService(
+    getFieldServiceDemo(
       selectMonth,
       selectYear,
       user.id,
-      0,
-      0,
       page,
-      10,
-      "demo"
+      10
     ).then((res) => {
       setDemos(res.data);
       setTotalPage(res.count_page);
