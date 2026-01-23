@@ -14,7 +14,7 @@ export const getFieldService = async (
   cust_id,
   page,
   limit,
-  project_name = ""
+  project_name = "",
 ) => {
   let sts = "";
   let se = "";
@@ -105,7 +105,7 @@ export const getPlaningactual = async (
   year,
   sales_exec,
   mode,
-  quarter
+  quarter,
 ) => {
   let monthstr = "";
   let quarterstr = "";
@@ -136,7 +136,7 @@ export const getFieldServiceDemo = async (
   se_id,
 
   page,
-  limit
+  limit,
 ) => {
   if (month !== 0) {
     month = `&month=${month}`;
@@ -157,5 +157,25 @@ export const getFieldServiceDemo = async (
     year;
 
   const response = await axios.get(url);
+  return response.data;
+};
+export const saveMaintenanceDemo = async (data) => {
+  const url = apiUrlOdoo + "/fieldservice/demo/maintenance/save";
+  const response = await axios.post(url, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data;
+};
+export const saveHarvestDemo = async (data) => {
+  const url = apiUrlOdoo + "/fieldservice/demo/harvest/save";
+  const response = await axios.post(url, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
   return response.data;
 };

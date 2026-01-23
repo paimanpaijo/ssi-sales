@@ -103,7 +103,7 @@ const FieldAddCustomer = ({ onSave, onCancel }) => {
     };
 
     const res = await saveCustomer(payloadFields);
-
+    console.log(res);
     // setIsSaving(false);
     if (res && res.success) {
       Alert.alert("Success", "Data has been saved", [{ text: "OK" }]);

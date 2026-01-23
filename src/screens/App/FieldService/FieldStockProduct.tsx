@@ -16,7 +16,7 @@ const FieldStockProduct = () => {
     productStocks,
     handleRemoveStockProduct,
   } = useFieldServiceContext();
-  console.log("productStock", productStocks);
+
   return (
     <View style={{ marginTop: 5, marginHorizontal: 5 }}>
       <View style={{ marginBottom: 15, marginHorizontal: 5 }}>
@@ -174,6 +174,7 @@ const FieldStockProduct = () => {
           Sold
         </Text>
       </View>
+
       {productStocks.map((item, index) => (
         <View
           key={index}
@@ -207,7 +208,7 @@ const FieldStockProduct = () => {
               ])
             }
           />
-          <Text style={{ width: "50%" }}>{item.product_name}</Text>
+          <Text style={{ width: "40%" }}>{item.product_name}</Text>
           <Text style={{ width: "25%", textAlign: "center" }}>
             {item.x_studio_stock}
           </Text>

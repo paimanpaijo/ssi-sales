@@ -147,7 +147,7 @@ export const FieldServiceContextProvider = ({ children }) => {
         setIsCheckIn(res.count_notcheckout > 0);
         setFieldserviceList(res.data);
         setTotalPage(res.count_page);
-      }
+      },
     );
   }, [page, selectMonth, selectYear]);
 
@@ -160,7 +160,7 @@ export const FieldServiceContextProvider = ({ children }) => {
       Alert.alert(
         "Error",
         "Please fill all required field (customer, project, date)",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
       return;
     }
@@ -168,7 +168,7 @@ export const FieldServiceContextProvider = ({ children }) => {
       Alert.alert(
         "Error",
         "Please fill all required field (customer, project, date)",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
       return;
     }
@@ -199,7 +199,7 @@ export const FieldServiceContextProvider = ({ children }) => {
                 0,
                 page,
                 10,
-                ""
+                "",
               ).then((res) => {
                 setIsCheckIn(res.count_notcheckout > 0);
                 setFieldserviceList(res.data);
@@ -219,7 +219,7 @@ export const FieldServiceContextProvider = ({ children }) => {
       description: fieldServiceData.name,
       hours: getHoursDecimal(
         fieldServiceData.x_studio_activity_date,
-        new Date().toISOString().slice(0, 19).replace("T", " ")
+        new Date().toISOString().slice(0, 19).replace("T", " "),
       ),
       employee_id: user.id,
     };
@@ -268,7 +268,7 @@ export const FieldServiceContextProvider = ({ children }) => {
                 0,
                 page,
                 10,
-                ""
+                "",
               ).then((res) => {
                 setIsCheckIn(res.count_notcheckout > 0);
                 setFieldserviceList(res.data);
@@ -467,6 +467,32 @@ export const FieldServiceContextProvider = ({ children }) => {
         break;
     }
   };
+  // Tambahkan di dalam FieldServiceContextProvider
+
+  const fetchCustomerAfterAdd = async (newCustomerId) => {
+    try {
+      //  panggil API yang sama dengan useEffect awal
+      const res = await getCustomerList(1, user.id, 1, 0, "", "all");
+      if (res && res.data) {
+        const updatedList = res.data.map((item) => ({
+          id: item.id,
+          label: `${item.complete_name} - ${item.city} [${item.x_studio_type}]`,
+          value: item.id,
+          x_studio_type: item.x_studio_type,
+        }));
+
+        setCustomerList(updatedList);
+
+        // Otomatis set partner_id di form Field Service ke customer yang baru dibuat
+        if (newCustomerId) {
+          handleOnChange("partner_id", newCustomerId);
+        }
+      }
+    } catch (error) {
+      console.error("Gagal refresh customer list:", error);
+    }
+  };
+
   const handleAddStockProduct = () => {
     if (productStock.id === 0) {
       Alert.alert("Warning", "Please select product first");
@@ -542,6 +568,7 @@ export const FieldServiceContextProvider = ({ children }) => {
         setProductnonCompetitor,
         handleAddStockProduct,
         productStocks,
+        fetchCustomerAfterAdd,
       }}
     >
       {children}

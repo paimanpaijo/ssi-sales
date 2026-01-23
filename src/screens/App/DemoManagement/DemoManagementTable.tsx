@@ -3,12 +3,19 @@
 import MonthYearPickerModal from "@/src/component/MonthYearPickerModal";
 import PagingMobile from "@/src/component/PagingMobile";
 import { useDemoManagementContext } from "@/src/context/App/DemoManagementContext";
-import { formatDateForDisplay, formatDateIDN } from "@/src/library/Utility";
+import { formatDateForDisplay } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
-import { router } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Text, View } from "react-native";
-import { Button, Card, FAB } from "react-native-paper";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Card,
+  IconButton,
+  Modal,
+  Portal,
+  TextInput,
+} from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
 
 const DemoManagementTable = () => {
   const {
@@ -21,215 +28,122 @@ const DemoManagementTable = () => {
     page,
     setPage,
     totalPage,
-    setTotalPage,
-    total,
-    setTotal,
-    handleCheckOut,
-    ShowFieldService,
-    handleCheckOutShow,
-    count_notcheckout,
-    isCheckIn,
+    handleSaveMaintenance,
+    handleSaveHarvest,
+    // Pastikan setCustomer ada di context kamu
+    // setCustomer,
   } = useDemoManagementContext();
+
   const [showPicker, setShowPicker] = useState(false);
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [visibleDate, setVisibleDate] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
+  const [visibleTime, setVisibleTime] = useState(false);
+  const [maintenanceDate, setMaintenanceDate] = useState(new Date());
+  const [visibleHarvestDate, setVisibleHarvestDate] = useState(false);
+  const [showHarvestModal, setShowHarvestModal] = useState(false);
+  const [harvestDate, setHarvestDate] = useState(new Date());
+  const [harvestRendement, setHarvestRendement] = useState(0);
+  const [harvestUbinan, setHarvestUbinan] = useState(0);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
-  const renderItemOrder = ({ item, index }) => (
-    <Card style={{ paddingHorizontal: 3, marginBottom: 5 }}>
-      <Card.Content style={{ paddingHorizontal: 2 }}>
-        <View
-          style={{
-            flexDirection: "row", //  bikin elemen sejajar kiri-kanan
-            justifyContent: "space-between", //  beri jarak maksimal di antara elemen
-            alignItems: "center", //  sejajarkan vertikal di tengah
-            backgroundColor: "lightblue",
 
-            paddingHorizontal: 2,
-            borderRadius: 4, // opsional biar rapi
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: "black",
-              fontSize: 16,
-              backgroundColor: "lightblue",
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-            }}
-          >
-            {item.name}
-          </Text>
+  // Komponen pembantu untuk baris data agar kode lebih bersih
+  const DataRow = ({ label, value }: { label: string; value: any }) => (
+    <View style={styles.dataRow}>
+      <Text>
+        {label} : <Text style={{ fontWeight: "bold" }}>{value || ""}</Text>
+      </Text>
+    </View>
+  );
+
+  const renderItemOrder = ({ item }: { item: any }) => (
+    <Card style={styles.card}>
+      <Card.Content style={{ paddingHorizontal: 2 }}>
+        <View style={styles.headerRow}>
+          <Text style={styles.taskName}>{item.task_name}</Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Activity Date :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.x_studio_activity_date
-                ? formatDateIDN(item.x_studio_activity_date)
-                : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Start :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.x_studio_activity_date
-                ? formatDateForDisplay(item.x_studio_start_time)
-                : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            End :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.x_studio_end_time
-                ? formatDateForDisplay(item.x_studio_end_time)
-                : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Customer :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.partner_id ? item.partner_id[1] : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Project :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.project_id ? item.project_id[1] : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Address :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.x_studio_address ? item.x_studio_address : ""}
-            </Text>
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "white",
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-          }}
-        >
-          <Text>
-            Stage :{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {item.stage_id ? item.stage_id[1] : ""}
-            </Text>
-          </Text>
-        </View>
+
+        <DataRow
+          label="Activity Date"
+          value={
+            item.activity_date ? formatDateForDisplay(item.activity_date) : ""
+          }
+        />
+        <DataRow
+          label="Plant"
+          value={item.plant_date ? formatDateForDisplay(item.plant_date) : ""}
+        />
+        <DataRow label="Product Name" value={item.product_name} />
+        <DataRow label="Customer" value={item.customer_name} />
+        <DataRow label="Address" value={item.address} />
+
+        {item.maintenance_date && (
+          <DataRow
+            label="Maintenance Date"
+            value={formatDateForDisplay(item.maintenance_date)}
+          />
+        )}
+        {item.harvest_date && (
+          <DataRow
+            label="Harvest Date"
+            value={formatDateForDisplay(item.harvest_date)}
+          />
+        )}
       </Card.Content>
+
       <Card.Actions style={{ justifyContent: "flex-end" }}>
-        {item.x_studio_end_time ? (
-          <Button
-            mode="contained"
-            style={{ marginRight: 10, backgroundColor: "green" }}
-            onPress={() => router.push("/fieldservicedtl/" + item.id)}
-          >
-            View
-          </Button>
-        ) : (
-          <Button
-            mode="contained"
-            style={{ marginRight: 10, backgroundColor: "maroon" }}
-            onPress={() => {
-              handleCheckOutShow(item);
-            }}
-          >
-            Check Out
-          </Button>
+        {!item.maintenance_date && (
+          <View style={styles.actionButtonWrapper}>
+            <IconButton
+              icon="hand-coin-outline"
+              size={18}
+              iconColor="black"
+              style={{ backgroundColor: "lightblue" }}
+              onPress={() => {
+                setSelectedItem(item); // Simpan data item yang dipilih
+                setMaintenanceDate(new Date());
+                setShowMaintenanceModal(true); // Buka modal
+              }}
+            />
+            <Text style={styles.actionText}>Maintenance</Text>
+          </View>
+        )}
+        {!item.harvest_date && (
+          <View style={styles.actionButtonWrapper}>
+            <IconButton
+              icon="sickle"
+              size={18}
+              iconColor="white"
+              style={{ backgroundColor: "blue" }}
+              onPress={() => {
+                setSelectedItem(item);
+                setHarvestDate(new Date());
+                setHarvestRendement(0);
+                setHarvestUbinan(0); // Membutuhkan setCustomer dari context
+                setShowHarvestModal(true); // Buka modal
+              }}
+            />
+            <Text style={styles.actionText}>Harvest</Text>
+          </View>
         )}
       </Card.Actions>
     </Card>
   );
+
   return (
     <View style={formStyles.wrapper}>
       <Text style={[formStyles.Header, { marginBottom: 0 }]}>
-        Field Service
+        Demo Management
       </Text>
+
       <View style={{ paddingHorizontal: 15 }}>
         <Button
           mode="contained-tonal"
           onPress={() => setShowPicker(true)}
-          style={{
-            marginTop: 10,
-            borderRadius: 10,
-          }}
+          style={{ marginTop: 10, borderRadius: 10 }}
           icon={"calendar-month"}
         >
           {selectedDate.toLocaleDateString("en-US", {
@@ -248,7 +162,9 @@ const DemoManagementTable = () => {
           }}
         />
       </View>
-      <View style={{ height: 670 }}>
+
+      {/* Gunakan flex: 1 agar responsif di berbagai ukuran layar */}
+      <View style={{ flex: 1, paddingBottom: 20 }}>
         <FlatList
           data={demos}
           renderItem={renderItemOrder}
@@ -256,24 +172,204 @@ const DemoManagementTable = () => {
           keyExtractor={(item, index) =>
             item.id?.toString() || index.toString()
           }
+          contentContainerStyle={{ paddingBottom: 20 }}
         />
         <PagingMobile
           currentPage={page}
           totalPage={totalPage}
-          onPageChange={(pg) => handlePageChange(pg)}
+          onPageChange={handlePageChange}
         />
       </View>
-      {!isCheckIn && (
-        <FAB
-          icon="plus-circle-outline"
-          color="white"
-          size="30"
-          onPress={() => setIsForm(true)}
-          style={[formStyles.fabBlue, { bottom: 160 }]}
-        />
-      )}
+      {/* Modal Form Maintenance */}
+      <Portal>
+        <Modal
+          visible={showMaintenanceModal}
+          onDismiss={() => setShowMaintenanceModal(false)}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            margin: 20,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
+            Maintenance Date
+          </Text>
+
+          <Text style={{ marginBottom: 5 }}>
+            Task: {selectedItem?.task_name}
+          </Text>
+
+          {/* Kamu bisa menggunakan DatePicker di sini */}
+
+          <Button
+            mode="outlined"
+            onPress={() => {
+              setVisibleDate(true);
+            }}
+            style={{ marginBottom: 20, borderRadius: 5 }}
+          >
+            {maintenanceDate.toDateString()}
+          </Button>
+
+          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            <Button onPress={() => setShowMaintenanceModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => {
+                // Panggil fungsi submit ke API di sini
+                handleSaveMaintenance(selectedItem?.id, maintenanceDate);
+                setShowMaintenanceModal(false);
+              }}
+              style={{ marginLeft: 10 }}
+            >
+              Save
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
+      <Portal>
+        <Modal
+          visible={showHarvestModal}
+          onDismiss={() => setShowHarvestModal(false)}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            margin: 20,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
+            Harvest Date
+          </Text>
+
+          <Text style={{ marginBottom: 5 }}>
+            Task: {selectedItem?.task_name}
+          </Text>
+
+          {/* Kamu bisa menggunakan DatePicker di sini */}
+
+          <Button
+            mode="outlined"
+            onPress={() => {
+              setVisibleHarvestDate(true);
+            }}
+            style={{ marginBottom: 20, borderRadius: 5 }}
+          >
+            {harvestDate.toDateString()}
+          </Button>
+          <TextInput
+            label="Rendement (%) "
+            mode="outlined"
+            value={harvestRendement}
+            onChangeText={(text) => setHarvestRendement(text)}
+            keyboardType="numeric"
+            style={{ marginBottom: 20, backgroundColor: "white" }}
+          />
+          <TextInput
+            label="Ubinan (mt/Ha) "
+            value={harvestUbinan}
+            mode="outlined"
+            onChangeText={(text) => setHarvestUbinan(text)}
+            keyboardType="numeric"
+            style={{ marginBottom: 20, backgroundColor: "white" }}
+          />
+
+          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            <Button onPress={() => setShowHarvestModal(false)}>Cancel</Button>
+            <Button
+              mode="contained"
+              onPress={() => {
+                handleSaveHarvest(
+                  selectedItem?.id,
+                  harvestDate,
+                  harvestRendement,
+                  harvestUbinan,
+                );
+                setShowHarvestModal(false);
+              }}
+              style={{ marginLeft: 10 }}
+            >
+              Save
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
+      <DatePickerModal
+        locale="id"
+        mode="single"
+        visible={visibleDate}
+        date={tempDate}
+        onDismiss={() => setVisibleDate(false)}
+        onConfirm={({ date }) => {
+          setVisibleDate(false);
+
+          setMaintenanceDate(date);
+
+          setVisibleTime(true);
+        }}
+      />
+      <DatePickerModal
+        locale="id"
+        mode="single"
+        visible={visibleHarvestDate}
+        date={tempDate}
+        onDismiss={() => setVisibleHarvestDate(false)}
+        onConfirm={({ date }) => {
+          setVisibleHarvestDate(false);
+          setHarvestDate(date);
+
+          setVisibleTime(true);
+        }}
+      />
     </View>
   );
 };
+
+// Styles tambahan untuk merapikan renderItem
+const styles = StyleSheet.create({
+  card: {
+    paddingHorizontal: 3,
+    marginBottom: 8,
+    backgroundColor: "white",
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "lightblue",
+    borderRadius: 4,
+    marginBottom: 4,
+  },
+  taskName: {
+    fontWeight: "bold",
+    color: "black",
+    fontSize: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  dataRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+  },
+  actionButtonWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 5,
+  },
+  actionText: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: -8,
+    opacity: 0.7,
+  },
+});
 
 export default DemoManagementTable;

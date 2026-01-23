@@ -47,12 +47,13 @@ const FieldServiceForm = () => {
     handleOnChange,
     setAddCustomer,
     handleCustomers,
+    fetchCustomerAfterAdd,
   } = useFieldServiceContext();
   const [visible, setVisible] = useState(false);
   const [visibleMap, setVisibleMap] = useState(false);
   const [visibleDate, setVisibleDate] = useState(false);
   const [visibleTime, setVisibleTime] = useState(false);
-  // const [customers, setCustomers] = useState(customerList);
+  const [customers, setCustomers] = useState(customerList);
   const [selectedCustomerId, setSelectedCustomerId] = useState<
     string | number
   >();
@@ -226,7 +227,7 @@ const FieldServiceForm = () => {
                 onConfirm={({ hours, minutes }) => {
                   // Pastikan finalDate mengambil object Date yang valid
                   let finalDate = new Date(
-                    tempDate instanceof Date ? tempDate : new Date()
+                    tempDate instanceof Date ? tempDate : new Date(),
                   );
                   finalDate.setHours(hours);
                   finalDate.setMinutes(minutes);
@@ -234,14 +235,14 @@ const FieldServiceForm = () => {
 
                   const step = 5;
                   finalDate.setMinutes(
-                    Math.round(finalDate.getMinutes() / step) * step
+                    Math.round(finalDate.getMinutes() / step) * step,
                   );
 
                   setVisibleTime(false);
                   // Selalu bungkus dengan new Date sebelum dikirim ke utilitas
                   handleOnChange(
                     "x_studio_activity_date",
-                    formatDateForBackendWIB(new Date(finalDate))
+                    formatDateForBackendWIB(new Date(finalDate)),
                   );
                 }}
               />
@@ -338,7 +339,7 @@ const FieldServiceForm = () => {
                 <FieldAddCustomer
                   onSave={(newCustomer) => {
                     // 1️⃣ tambah ke list customer
-
+                    fetchCustomerAfterAdd(newCustomer.id);
                     setCustomers((prev) => [...prev, newCustomer]);
 
                     // 2️⃣ auto select customer baru
