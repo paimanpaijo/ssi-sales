@@ -260,17 +260,43 @@ const FieldServiceForm = () => {
                   label="Attendance"
                   style={{ flex: 1, textAlign: "right", width: "50%" }}
                   onChangeText={(text) => {
-                    handleOnChange("x_studio_attendant", text);
+                    // ganti koma menjadi titik
+                    let formatted = text.replace(/,/g, ".");
+
+                    // hanya izinkan angka dan 1 titik decimal
+                    formatted = formatted.replace(/[^0-9.]/g, "");
+
+                    // cegah lebih dari 1 titik
+                    const parts = formatted.split(".");
+                    if (parts.length > 2) {
+                      formatted = parts[0] + "." + parts.slice(1).join("");
+                    }
+
+                    handleOnChange("x_studio_attendant", formatted);
                   }}
                   value={x_studio_attendant}
                   keyboardType="decimal-pad"
+                  selectTextOnFocus={true}
                 />
                 <TextInput
                   mode="outlined"
                   label="Area"
                   style={{ flex: 1, textAlign: "right", width: "49%" }}
+                  selectTextOnFocus={true}
                   onChangeText={(text) => {
-                    handleOnChange("x_studio_luas_lahan_ha", text);
+                    // ganti koma menjadi titik
+                    let formatted = text.replace(/,/g, ".");
+
+                    // hanya izinkan angka dan 1 titik decimal
+                    formatted = formatted.replace(/[^0-9.]/g, "");
+
+                    // cegah lebih dari 1 titik
+                    const parts = formatted.split(".");
+                    if (parts.length > 2) {
+                      formatted = parts[0] + "." + parts.slice(1).join("");
+                    }
+
+                    handleOnChange("x_studio_luas_lahan_ha", formatted);
                   }}
                   value={x_studio_luas_lahan_ha}
                   keyboardType="decimal-pad"

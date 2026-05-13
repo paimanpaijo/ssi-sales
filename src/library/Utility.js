@@ -116,7 +116,15 @@ export const getDateDifferenceInDays = (date1, date2) => {
 };
 
 export function getRandomLetter(length = 3) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+export function getRandomNumber(length = 3) {
+  const chars = "0123456789";
   let result = "";
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -206,11 +214,13 @@ export const formatPhoneNumber = (number) => {
 
   if (clean.startsWith("0")) {
     // Ubah 0 di awal jadi +62
-    return "+62" + clean.substring(1);
-  } else if (!clean.startsWith("+62")) {
-    // Jika belum ada +62 dan bukan 0, bisa ditambahkan manual (opsional)
-    return "+62" + clean;
-  }
+    return "62" + clean.substring(1);
+  } else if (clean.startsWith("0")) {
+    // Ubah 0 di awal jadi +62
+    return "62" + clean.substring(1);
+    
+  } else if (clean.startsWith("+62")) {
+    return clean.substring(1);  }
 
   return clean;
 };
@@ -257,3 +267,12 @@ export const formatDateForBackendWIB = (date: Date) => {
 export const parseBackendDateToWIB = (date: string) => {
   return toZonedTime(new Date(date), WIB_TZ);
 };
+
+export const cleanBase64Image = (base64: string)=> {
+  if (!base64) return undefined;
+
+  // 🔥 buang prefix data:image/...;base64,
+  return base64.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+}
+
+   // Output: "6221555123"

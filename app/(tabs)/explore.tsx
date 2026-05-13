@@ -13,42 +13,54 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const ITEM_SIZE = SCREEN_WIDTH / 3 - 24; // dikurangi margin
 
 const menuItems = [
-  { id: "1", title: "Sales Order", icon: "🛒", route: "/sales/", role: "all" },
+  {
+    id: "1",
+    title: "Sales Order",
+    icon: "🛒",
+    route: "/sales/",
+    role: "district sales manager,sales manager,sales executive",
+  },
   {
     id: "2",
     title: "Planning & Actuals",
     icon: "📊",
     route: "/planing/",
-    role: "all",
+    role: "district sales manager,sales manager,sales executive",
   },
   {
     id: "3",
     title: "Activity Tracking",
     icon: "🛻",
     route: "/fieldservice/",
-    role: "all",
+    role: "district sales manager,sales manager,sales executive",
   },
   {
     id: "4",
     title: "Demo Management",
     icon: "🗓️",
     route: "/demomanagement/",
-    role: "all",
+    role: "district sales manager,sales manager,sales executive",
   },
-  { id: "5", title: "Costumer", icon: "👥", route: "/customer", role: "all" },
+  {
+    id: "5",
+    title: "Costumer",
+    icon: "👥",
+    route: "/customer",
+    role: "district sales manager,sales manager,sales executive",
+  },
   {
     id: "6",
     title: "Collection",
     icon: "🧾",
     route: "/invoice/",
-    role: "all",
+    role: "district sales manager,sales manager,sales executive",
   },
   {
     id: "7",
-    title: "Approved PO",
+    title: "Approval Sales Order",
     icon: "📋",
-    route: "/check",
-    role: "district sales manager",
+    route: "/approval/",
+    role: "district sales manager,sales manager,president director",
   },
 ];
 
@@ -57,7 +69,7 @@ export default function ExploreScreen() {
   const jobTitle = user?.job_title?.toLowerCase() ?? "";
 
   const filteredMenu = menuItems.filter(
-    (item) => item.role === jobTitle || item.role === "all"
+    (item) => item.role.split(",").includes(jobTitle) || item.role === "all",
   );
 
   return (
@@ -106,7 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "600",
     textAlign: "center",
   },

@@ -31,6 +31,81 @@ const FieldDirectSelling = () => {
   };
   return (
     <View style={{ marginVertical: 0, paddingHorizontal: 5 }}>
+      <SelectModalInput
+        label="Product"
+        mode="outlined"
+        placeholder="Produk"
+        data={productDemo}
+        value={directSelling.product}
+        selectedValue={directSelling.product}
+        renderHeader={(close) => (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "#0d6efd",
+              padding: 12,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 18 }}>Product</Text>
+            <TouchableOpacity onPress={close}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Tutup ✕
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        renderItem={(item, onSelect) => (
+          <>
+            <TouchableOpacity
+              onPress={() => onSelect(item)}
+              style={{
+                padding: 15,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottomWidth: 1,
+                borderColor: "#eee",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+
+                  fontWeight: "bold",
+                  width: "70%",
+                }}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+            )
+          </>
+        )}
+        renderFooter={(close) => (
+          <View style={{ marginTop: 10 }}>
+            <TouchableOpacity
+              onPress={close}
+              style={{
+                backgroundColor: "#0d6efd",
+                padding: 12,
+                borderRadius: 5,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        onSelect={(value) =>
+          setDirectSelling((prev) => ({
+            ...prev,
+            product: value.label,
+            id: value.id,
+          }))
+        }
+      />
+
       <View
         style={[
           formStyles.rowTab,
@@ -39,89 +114,11 @@ const FieldDirectSelling = () => {
           },
         ]}
       >
-        <View style={{ width: "60%" }}>
-          <SelectModalInput
-            label="Product"
-            mode="outlined"
-            placeholder="Produk"
-            data={productDemo}
-            value={directSelling.product}
-            renderHeader={(close) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  backgroundColor: "#0d6efd",
-                  padding: 12,
-                }}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>Product</Text>
-                <TouchableOpacity onPress={close}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Tutup ✕
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            renderItem={(item, onSelect) => (
-              <>
-                <TouchableOpacity
-                  onPress={() => onSelect(item)}
-                  style={{
-                    padding: 15,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    borderBottomWidth: 1,
-                    borderColor: "#eee",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-
-                      fontWeight: "bold",
-                      width: "70%",
-                    }}
-                  >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-                )
-              </>
-            )}
-            renderFooter={(close) => (
-              <View style={{ marginTop: 10 }}>
-                <TouchableOpacity
-                  onPress={close}
-                  style={{
-                    backgroundColor: "#0d6efd",
-                    padding: 12,
-                    borderRadius: 5,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Tutup
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            onSelect={(value) =>
-              setDirectSelling((prev) => ({
-                ...prev,
-                product: value.label,
-                id: value.id,
-              }))
-            }
-          />
-        </View>
-
         <TextInput
           mode="outlined"
           label="Qty(Kg)"
           keyboardType="decimal-pad"
-          style={{ flex: 1, textAlign: "right", width: "33%" }}
+          style={{ flex: 1, textAlign: "right", width: "75%" }}
           value={directSelling.quantity}
           onChangeText={(text) =>
             setDirectSelling((prev) => ({

@@ -25,6 +25,7 @@ const FieldStockProduct = () => {
           mode="outlined"
           placeholder="Produk"
           data={productDemo}
+          selectedValue={productStock.product}
           //lue={demo.product}
           renderHeader={(close) => (
             <View
@@ -83,12 +84,12 @@ const FieldStockProduct = () => {
             label="Stock (Kg)"
             placeholder="Stock (Kg)"
             style={{ width: "40%" }}
-            value={productStock.stock}
+            value={productStock.stock.toString()}
             keyboardType="numeric"
-            onChange={(text) =>
+            onChangeText={(text) =>
               setProductStock((prev) => ({
                 ...prev,
-                stock: text.nativeEvent.text,
+                stock: parseFloat(text) || text,
               }))
             }
           />
@@ -96,13 +97,13 @@ const FieldStockProduct = () => {
             mode="outlined"
             label="Sold"
             placeholder="Sold"
-            value={productStock.sale}
+            value={productStock.sale.toString()}
             keyboardType="numeric"
             style={{ width: "40%", marginLeft: 10 }}
-            onChange={(text) =>
+            onChangeText={(text) =>
               setProductStock((prev) => ({
                 ...prev,
-                sale: text.nativeEvent.text,
+                sale: parseFloat(text) || text,
               }))
             }
           />

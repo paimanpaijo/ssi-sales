@@ -23,6 +23,7 @@ import { Button, Provider, Text, TextInput } from "react-native-paper";
 // tambahkan import expo utilities
 import { Checkbox } from "@/src/component/Checkbox";
 import MapPickerModal from "@/src/component/MapPickerModal";
+import { formatPhoneNumber } from "@/src/library/Utility";
 import * as Sharing from "expo-sharing";
 
 const ALLOWED_EXT = [
@@ -45,9 +46,16 @@ function getExt(filename: string) {
 }
 
 const CustomerForm = () => {
-  const { setIsForm, handleSave, customer, handleOnChange, handleClose } =
-    useCustomerContext();
-  const categories = ["Dealer", "Retailer", "Trader", "Farmer"];
+  const {
+    setIsForm,
+    handleSave,
+    customer,
+    handleOnChange,
+    handleClose,
+    isHaveDemo,
+    categories,
+  } = useCustomerContext();
+
   const [visibleMap, setVisibleMap] = useState(false);
   const [selected, setSelected] = useState("Dealer");
   const labelAnim = new Animated.Value(selected ? 1 : 0);
@@ -185,7 +193,7 @@ const CustomerForm = () => {
       if (!uriCandidate) {
         Alert.alert(
           "File Error",
-          "File tidak memiliki URI yang dapat diakses."
+          "File tidak memiliki URI yang dapat diakses.",
         );
         return;
       }
@@ -213,7 +221,7 @@ const CustomerForm = () => {
       if (!(extAllowed || mimeAllowed)) {
         Alert.alert(
           "Tipe file tidak didukung",
-          "Pilih gambar, PDF, atau DOCX."
+          "Pilih gambar, PDF, atau DOCX.",
         );
         return;
       }
@@ -236,7 +244,7 @@ const CustomerForm = () => {
           "File Terlalu Besar",
           `File ${name} ukurannya ${
             Math.round((size / (1024 * 1024)) * 10) / 10
-          } MB. Maksimal ${(MAX_BYTES / (1024 * 1024)).toFixed(1)} MB.`
+          } MB. Maksimal ${(MAX_BYTES / (1024 * 1024)).toFixed(1)} MB.`,
         );
         return;
       }
@@ -309,7 +317,7 @@ const CustomerForm = () => {
       if (!uriCandidate) {
         Alert.alert(
           "File Error",
-          "File tidak memiliki URI yang dapat diakses."
+          "File tidak memiliki URI yang dapat diakses.",
         );
         return;
       }
@@ -339,7 +347,7 @@ const CustomerForm = () => {
       if (!(extAllowed || mimeAllowed)) {
         Alert.alert(
           "Tipe file tidak didukung",
-          "Pilih file gambar (jpg/png/...), PDF, atau DOCX."
+          "Pilih file gambar (jpg/png/...), PDF, atau DOCX.",
         );
         return;
       }
@@ -364,7 +372,7 @@ const CustomerForm = () => {
           `Ukuran file ${Math.round(size / 1024)} KB melebihi batas ${(
             MAX_BYTES /
             (1024 * 1024)
-          ).toFixed(1)} MB.`
+          ).toFixed(1)} MB.`,
         );
         return;
       }
@@ -383,10 +391,10 @@ const CustomerForm = () => {
         Alert.alert(
           "File Terlalu Besar",
           `Setelah konversi, file sekitar ${Math.round(
-            approxBytes / 1024
+            approxBytes / 1024,
           )} KB yang melebihi batas ${(MAX_BYTES / (1024 * 1024)).toFixed(
-            1
-          )} MB. Gunakan file lebih kecil atau upload multipart.`
+            1,
+          )} MB. Gunakan file lebih kecil atau upload multipart.`,
         );
         return;
       }
@@ -433,7 +441,7 @@ const CustomerForm = () => {
             } catch {
               // ignore
             }
-          }
+          },
         );
         localUri = dest;
       }
@@ -442,7 +450,7 @@ const CustomerForm = () => {
       if (!isAvailable) {
         Alert.alert(
           "Tidak tersedia",
-          "Fitur sharing/open tidak tersedia di perangkat ini."
+          "Fitur sharing/open tidak tersedia di perangkat ini.",
         );
         return;
       }
@@ -456,7 +464,7 @@ const CustomerForm = () => {
 
   const renderItem = ({ item }: { item: any }) => {
     const isImage = ["jpg", "jpeg", "png", "heic", "gif", "webp"].includes(
-      item.ext
+      item.ext,
     );
     return (
       <View style={styles.card}>
@@ -519,6 +527,7 @@ const CustomerForm = () => {
                 value={name}
                 onChangeText={(text) => handleOnChange("name", text)}
                 placeholder="Name"
+                editable={x_studio_type !== "Demo"}
               />
               <TextInput
                 mode="outlined"
@@ -590,7 +599,9 @@ const CustomerForm = () => {
                 label="Phone"
                 placeholder="Phone"
                 value={phone}
-                onChangeText={(text) => handleOnChange("phone", text)}
+                onChangeText={(text) =>
+                  handleOnChange("phone", formatPhoneNumber(text))
+                }
                 keyboardType="phone-pad"
               />
               <TextInput
@@ -614,7 +625,15 @@ const CustomerForm = () => {
               <View
                 style={[
                   formStyles.rowTab,
-                  { borderWidth: 1, borderRadius: 5, padding: 10, height: 50 },
+                  {
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    padding: 10,
+                    height: 65,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                  },
                 ]}
               >
                 <Animated.Text style={labelStyle}>Kategori</Animated.Text>
@@ -624,6 +643,11 @@ const CustomerForm = () => {
                     style={formStyles.radioContainer}
                     onPress={() => {
                       setSelected(item);
+                      console.log(item);
+                      {
+                        item === "Demo" &&
+                          handleOnChange("name", name + " (Demo)");
+                      }
 
                       handleOnChange("x_studio_type", item);
                     }}
@@ -670,7 +694,7 @@ const CustomerForm = () => {
                 onChange={() => {
                   handleOnChange(
                     "x_studio_agreement_signed",
-                    !x_studio_agreement_signed
+                    !x_studio_agreement_signed,
                   );
                   // setIsChecked(!isChecked);
                 }}

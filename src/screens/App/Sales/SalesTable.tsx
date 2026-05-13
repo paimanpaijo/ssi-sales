@@ -7,7 +7,8 @@ import { formatDateIDN, formatNumber } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
 import React, { useState } from "react";
 import { FlatList, View } from "react-native";
-import { Button, Card, FAB, Text } from "react-native-paper";
+import { Button, Card, FAB, IconButton, Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SalesTable = () => {
   const {
@@ -21,6 +22,8 @@ const SalesTable = () => {
     setPage,
     totalPage,
     total,
+    setSelectItem,
+    setIsFormDetail,
   } = useSalesOrderContext();
   const [showPicker, setShowPicker] = useState(false);
   const renderItemOrder = ({ item, index }) => (
@@ -145,6 +148,17 @@ const SalesTable = () => {
           </Text>
         </View>
       </Card.Content>
+      <Card.Actions>
+        <IconButton
+          icon="eye"
+          iconColor="white"
+          onPress={() => {
+            setIsFormDetail(true);
+            setSelectItem(item);
+          }}
+          style={{ backgroundColor: "navy" }}
+        />
+      </Card.Actions>
     </Card>
   );
   const handlePageChange = (newPage: number) => {
@@ -181,7 +195,7 @@ const SalesTable = () => {
           }}
         />
       </View>
-      <View style={{ height: 650 }}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={salesorderList}
           renderItem={renderItemOrder}
@@ -190,11 +204,15 @@ const SalesTable = () => {
             item.id?.toString() || item.no_sales_order || index.toString()
           }
         />
-        <PagingMobile
-          currentPage={page}
-          totalPage={totalPage}
-          onPageChange={(pg) => handlePageChange(pg)}
-        />
+        <SafeAreaView edges={["bottom"]}>
+          <View style={{ paddingVertical: 10 }}>
+            <PagingMobile
+              currentPage={page}
+              totalPage={totalPage}
+              onPageChange={(pg) => handlePageChange(pg)}
+            />
+          </View>
+        </SafeAreaView>
       </View>
 
       <FAB

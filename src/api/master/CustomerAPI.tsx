@@ -8,11 +8,11 @@ const { apiUrlOdoo } = Constants.expoConfig.extra;
 export async function getCustomerList(
   cust_only = 1,
   employeeId = 0,
-
   page = 1,
   limit = 0,
   search = "",
-  type = "all"
+  type = "all",
+  excepttype = "",
 ) {
   let typestring = "";
   if (search !== "") {
@@ -20,6 +20,9 @@ export async function getCustomerList(
   }
   if (type !== "all") {
     typestring = `&type=${type}`;
+  }
+  if (excepttype !== "") {
+    typestring = `&excepttype=${excepttype}`;
   }
   const url =
     apiUrlOdoo +
@@ -33,6 +36,7 @@ export async function getCustomerList(
     limit +
     search +
     typestring;
+
   console.log(url);
   const response = await axios.get(url);
 

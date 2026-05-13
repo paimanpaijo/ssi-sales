@@ -6,8 +6,11 @@ import Constants from "expo-constants";
 
 const { apiUrlOdoo } = Constants.expoConfig.extra;
 
-export const getProduct = async () => {
-  const url = apiUrlOdoo + "/products/all";
+export const getProduct = async (sts = "all") => {
+  let url = apiUrlOdoo + "/products/all";
+  if (sts !== "all") {
+    url += `?category=${sts}`;
+  }
 
   const response = await axios.get(url);
   return response.data;

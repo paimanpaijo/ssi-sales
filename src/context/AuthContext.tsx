@@ -13,6 +13,7 @@ import React, {
 } from "react";
 import { Alert } from "react-native";
 import { getEmployeeByEmail } from "../api/master/EmployeeAPI";
+import { removeToken } from "../library/Storage";
 
 const SECURE_KEY_TOKEN = "token_v1";
 const SECURE_KEY_USER = "user_v1";
@@ -151,11 +152,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const userdata = {
+        zurra_id: data.user.id,
         id: res.data.id,
         name: res.data.name,
         email: res.data.work_email,
         mobile: res.data.mobile_phone,
+        phone: res.data.work_phone,
         job_title: res.data.job_id ? res.data.job_id[1] : "user",
+        parent_chain: res.data.parent_chain,
+        avatar: data.user.avatar,
+        username: data.user.username,
       };
 
       setToken(accessToken);
@@ -173,7 +179,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async (silent = false) => {
     try {
       setUser(null);
+
       setToken(null);
+      removeToken();
+
       if (logoutTimerRef.current) {
         clearTimeout(logoutTimerRef.current);
         logoutTimerRef.current = null;
@@ -191,7 +200,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, logout, isAuthenticated }}
+      value={{ user, token, loading, login, logout, isAuthenticated, setUser }}
     >
       {children}
     </AuthContext.Provider>

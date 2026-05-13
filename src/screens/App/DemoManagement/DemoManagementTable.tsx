@@ -16,6 +16,7 @@ import {
   TextInput,
 } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const DemoManagementTable = () => {
   const {
@@ -41,6 +42,8 @@ const DemoManagementTable = () => {
   const [tempDate, setTempDate] = useState(new Date());
   const [visibleTime, setVisibleTime] = useState(false);
   const [maintenanceDate, setMaintenanceDate] = useState(new Date());
+  const [noteMaintenance, setNoteMaintenance] = useState("");
+  const [noteHarvest, setNoteHarvest] = useState("");
   const [visibleHarvestDate, setVisibleHarvestDate] = useState(false);
   const [showHarvestModal, setShowHarvestModal] = useState(false);
   const [harvestDate, setHarvestDate] = useState(new Date());
@@ -164,7 +167,7 @@ const DemoManagementTable = () => {
       </View>
 
       {/* Gunakan flex: 1 agar responsif di berbagai ukuran layar */}
-      <View style={{ flex: 1, paddingBottom: 20 }}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={demos}
           renderItem={renderItemOrder}
@@ -174,11 +177,15 @@ const DemoManagementTable = () => {
           }
           contentContainerStyle={{ paddingBottom: 20 }}
         />
-        <PagingMobile
-          currentPage={page}
-          totalPage={totalPage}
-          onPageChange={handlePageChange}
-        />
+        <SafeAreaView edges={["bottom"]}>
+          <View style={{ paddingVertical: 10 }}>
+            <PagingMobile
+              currentPage={page}
+              totalPage={totalPage}
+              onPageChange={handlePageChange}
+            />
+          </View>
+        </SafeAreaView>
       </View>
       {/* Modal Form Maintenance */}
       <Portal>
@@ -211,17 +218,38 @@ const DemoManagementTable = () => {
           >
             {maintenanceDate.toDateString()}
           </Button>
+          <TextInput
+            mode="outlined"
+            label="Note"
+            multiline={true}
+            numberOfLines={4}
+            style={{ marginBottom: 20, borderRadius: 5, height: 100 }}
+            value={noteMaintenance}
+            onChangeText={(text) => setNoteMaintenance(text)}
+          />
 
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Button onPress={() => setShowMaintenanceModal(false)}>
+            <Button
+              onPress={() => {
+                setShowMaintenanceModal(false);
+                setMaintenanceDate(new Date());
+                setNoteMaintenance("");
+              }}
+            >
               Cancel
             </Button>
             <Button
               mode="contained"
               onPress={() => {
                 // Panggil fungsi submit ke API di sini
-                handleSaveMaintenance(selectedItem?.id, maintenanceDate);
+                handleSaveMaintenance(
+                  selectedItem?.id,
+                  maintenanceDate,
+                  noteMaintenance,
+                );
                 setShowMaintenanceModal(false);
+                setMaintenanceDate(new Date());
+                setNoteMaintenance("");
               }}
               style={{ marginLeft: 10 }}
             >
@@ -276,9 +304,30 @@ const DemoManagementTable = () => {
             keyboardType="numeric"
             style={{ marginBottom: 20, backgroundColor: "white" }}
           />
+          <TextInput
+            mode="outlined"
+            label="Note"
+            multiline={true}
+            numberOfLines={4}
+            style={{ marginBottom: 20, borderRadius: 5, height: 100 }}
+            value={noteHarvest}
+            onChangeText={(text) => {
+              setNoteHarvest(text);
+            }}
+          />
 
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Button onPress={() => setShowHarvestModal(false)}>Cancel</Button>
+            <Button
+              onPress={() => {
+                setShowHarvestModal(false);
+                setHarvestDate(new Date());
+                setHarvestRendement(0);
+                setHarvestUbinan(0);
+                setNoteHarvest("");
+              }}
+            >
+              Cancel
+            </Button>
             <Button
               mode="contained"
               onPress={() => {
@@ -287,8 +336,13 @@ const DemoManagementTable = () => {
                   harvestDate,
                   harvestRendement,
                   harvestUbinan,
+                  noteHarvest,
                 );
                 setShowHarvestModal(false);
+                setHarvestDate(new Date());
+                setHarvestRendement("0");
+                setHarvestUbinan("0");
+                setNoteHarvest("");
               }}
               style={{ marginLeft: 10 }}
             >

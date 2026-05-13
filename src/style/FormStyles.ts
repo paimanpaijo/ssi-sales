@@ -423,24 +423,13 @@ const formStyles = StyleSheet.create({
     height: 150,
     borderRadius: 8,
   },
-  loadingContainer: {
-    marginTop: 20,
-    alignItems: "center",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1,
-  },
+
   loadingText: {
     marginTop: 10,
     fontSize: 16,
     padding: 5,
-    color: "yellow",
-    backgroundColor: MD2Colors.blue800,
+    color: "#333",
+
     opacity: 0.8,
     fontWeight: "bold",
   },
@@ -526,6 +515,15 @@ const formStyles = StyleSheet.create({
   },
   radioSelected: {
     backgroundColor: "#007AFF",
+  },
+
+  loadingContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    marginHorizontal: 50,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

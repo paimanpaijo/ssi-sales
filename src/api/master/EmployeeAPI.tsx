@@ -15,3 +15,14 @@ export const getEmployeeByEmail = async (email: string) => {
   const response = await axios.get(url);
   return response.data;
 };
+
+export const updateEmployee = async (data) => {
+  const url = apiUrlOdoo + "/employee/updatedata";
+  console.log("url", url);
+  const response = await axios.post(url, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};

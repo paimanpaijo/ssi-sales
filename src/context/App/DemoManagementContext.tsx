@@ -23,6 +23,7 @@ export const DemoManagementContextProvider = ({ children }) => {
   const [isCheckIn, setIsCheckIn] = useState(false);
   const [count_notcheckout, setCount_NotCheckOut] = useState(0);
   const [isForm, setIsForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getFieldServiceDemo(selectMonth, selectYear, user.id, page, 10).then(
@@ -46,7 +47,9 @@ export const DemoManagementContextProvider = ({ children }) => {
   };
 
   const exSaveMaintenanceDate = (data) => {
+    setIsLoading(true);
     saveMaintenanceDemo(data).then((res) => {
+      setIsLoading(false);
       if (res.success) {
         Alert.alert("Success", "Maintenance date saved successfully.");
         // Refresh data setelah penyimpanan berhasil
@@ -61,10 +64,11 @@ export const DemoManagementContextProvider = ({ children }) => {
       }
     });
   };
-  const handleSaveMaintenance = (id: number, harvest_date: any) => {
+  const handleSaveMaintenance = (id: number, harvest_date: any, note: any) => {
     const dt = {
       id: id,
       x_studio_maintenance_date: formatDateForBackendWIB(harvest_date),
+      x_studio_note_maintenance: note,
     };
 
     Alert.alert("Confirm", "Are you sure you want to save maintenance date?", [
@@ -85,12 +89,14 @@ export const DemoManagementContextProvider = ({ children }) => {
     harvest_date: any,
     rendemen: any,
     ubinan: any,
+    note: any,
   ) => {
     const dt = {
       id: id,
       x_studio_harvest_date: formatDateForBackendWIB(harvest_date),
       x_studio_rendemen: rendemen,
       x_studio_ubinan: ubinan,
+      x_studio_note_harvest: note,
     };
     Alert.alert("Confirm", "Are you sure you want to save harvest date?", [
       {
@@ -106,9 +112,12 @@ export const DemoManagementContextProvider = ({ children }) => {
   };
 
   const exSaveHarvestDate = (data) => {
+    setIsLoading(true);
     saveHarvestDemo(data).then((res) => {
+      setIsLoading(false);
       if (res.success) {
         Alert.alert("Success", "Harvest date saved successfully.");
+
         // Refresh data setelah penyimpanan berhasil
         getFieldServiceDemo(selectMonth, selectYear, user.id, page, 10).then(
           (res) => {

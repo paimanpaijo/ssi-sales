@@ -1,26 +1,17 @@
 /** @format */
 
-import { useAuth } from "@/src/context/AuthContext";
-import React, { useState } from "react";
-import { Text, View } from "react-native";
-import { Avatar } from "react-native-paper";
+import { useUserContext } from "@/src/context/UserContext";
+import React from "react";
+import { PaperProvider } from "react-native-paper";
+import PasswordForm from "./PasswordForm";
+import ProfileForm from "./ProfileForm";
 
 const ProfileScreen = () => {
-  const { user } = useAuth();
-  const [userData, setUserData] = useState({});
-  const [updateProfile, setIsUpdateProfile] = useState(false);
-  const [updatePassword, setIsUpdatePassword] = useState(false);
-  const [confirmUpdatePassword, setConfirmUpdatePassword] = useState(false);
-  const [confirmUpdateProfile, setConfirmUpdateProfile] = useState(false);
-  const [changepasswordData, setChangePasswordData] = useState(null);
-  const LeftContent = (props) => (
-    <Avatar.Icon {...props} source={{ uri: user.avatar }} />
-  );
-
+  const { isProfile } = useUserContext();
   return (
-    <View>
-      <Text>ProfileScreen</Text>
-    </View>
+    <PaperProvider>
+      {isProfile ? <ProfileForm /> : <PasswordForm />}
+    </PaperProvider>
   );
 };
 

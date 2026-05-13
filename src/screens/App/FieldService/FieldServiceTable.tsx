@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { Button, Card, FAB } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const FieldServiceTable = () => {
   const {
@@ -222,6 +223,7 @@ const FieldServiceTable = () => {
       <Text style={[formStyles.Header, { marginBottom: 0 }]}>
         Field Service
       </Text>
+
       <View style={{ paddingHorizontal: 15 }}>
         <Button
           mode="contained-tonal"
@@ -248,21 +250,34 @@ const FieldServiceTable = () => {
           }}
         />
       </View>
-      <View style={{ height: 670 }}>
+
+      {/* Container utama */}
+      <View style={{ flex: 1 }}>
+        {/* List */}
         <FlatList
           data={fieldServiceList}
           renderItem={renderItemOrder}
           style={{ marginTop: 5, marginHorizontal: 10 }}
+          contentContainerStyle={{ paddingBottom: 10 }}
           keyExtractor={(item, index) =>
             item.id?.toString() || index.toString()
           }
         />
-        <PagingMobile
-          currentPage={page}
-          totalPage={totalPage}
-          onPageChange={(pg) => handlePageChange(pg)}
-        />
+
+        {/* Paging selalu di bawah */}
+        <View style={{ paddingVertical: 10 }}>
+          <SafeAreaView edges={["bottom"]}>
+            <View style={{ paddingVertical: 10 }}>
+              <PagingMobile
+                currentPage={page}
+                totalPage={totalPage}
+                onPageChange={(pg) => handlePageChange(pg)}
+              />
+            </View>
+          </SafeAreaView>
+        </View>
       </View>
+
       {!isCheckIn && (
         <FAB
           icon="plus-circle-outline"

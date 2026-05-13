@@ -75,6 +75,7 @@ export const FieldServiceContextProvider = ({ children }) => {
     stock: 0,
     sale: 0,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [productnonCompetitor, setProductnonCompetitor] = useState([]);
 
   const handleAddDemo = (demo) => {
@@ -91,6 +92,7 @@ export const FieldServiceContextProvider = ({ children }) => {
       {
         x_studio_product: demo.id, // ini ID
         product_name: demo.product,
+        x_studio_seeds: demo.seeds || 0,
         x_studio_ubinan: 0,
         x_studio_rendemen: 0,
         x_studio_plant_date: demo.plant_date,
@@ -113,8 +115,10 @@ export const FieldServiceContextProvider = ({ children }) => {
     if (!user) {
       return;
     }
+    setIsLoading(true);
     getCustomerList(1, user.id, 1, 0, "", "all").then((res) => {
       let cust = [];
+      setIsLoading(false);
       res.data.map((item) => {
         cust.push({
           id: item.id,
@@ -142,8 +146,10 @@ export const FieldServiceContextProvider = ({ children }) => {
     if (!user) {
       return;
     }
+    setIsLoading(true);
     getFieldService(selectMonth, selectYear, user.id, 0, 0, page, 10, "").then(
       (res) => {
+        setIsLoading(false);
         setIsCheckIn(res.count_notcheckout > 0);
         setFieldserviceList(res.data);
         setTotalPage(res.count_page);
@@ -186,9 +192,9 @@ export const FieldServiceContextProvider = ({ children }) => {
       {
         text: "OK",
         onPress: () => {
-          console.log(fieldService);
+          setIsLoading(true);
           submitFieldService(fieldService).then((res) => {
-            console.log(res);
+            setIsLoading(false);
             if (res.success) {
               Alert.alert("Success", "Data has been saved", [{ text: "OK" }]);
               getFieldService(
@@ -256,8 +262,9 @@ export const FieldServiceContextProvider = ({ children }) => {
       {
         text: "OK",
         onPress: () => {
+          setIsLoading(true);
           updateFieldService(data).then((res) => {
-            console.log(res);
+            setIsLoading(false);
             if (res.success) {
               Alert.alert("Success", res.message, [{ text: "OK" }]);
               getFieldService(
@@ -287,8 +294,10 @@ export const FieldServiceContextProvider = ({ children }) => {
   };
   const handleCheckOutShow = (itemdt) => {
     if (itemdt.project_id[1].toLowerCase().includes("sbs")) {
+      setIsLoading(true);
       getProductDemo("all").then((res) => {
         let temp = [];
+        setIsLoading(false);
         res.data.map((item) => {
           temp.push({
             id: item.id,
@@ -301,8 +310,10 @@ export const FieldServiceContextProvider = ({ children }) => {
         setProductDemo(temp);
       });
     } else {
+      setIsLoading(true);
       getProductDemo(0).then((res) => {
         let temp = [];
+        setIsLoading(false);
         res.data.map((item) => {
           temp.push({
             id: item.id,
@@ -321,7 +332,9 @@ export const FieldServiceContextProvider = ({ children }) => {
   };
 
   const ShowFieldService = (item) => {
+    setIsLoading(true);
     getFieldServiceDetail(item.id).then((res) => {
+      setIsLoading(false);
       setFieldServiceData(res.data);
     });
   };
@@ -472,7 +485,9 @@ export const FieldServiceContextProvider = ({ children }) => {
   const fetchCustomerAfterAdd = async (newCustomerId) => {
     try {
       //  panggil API yang sama dengan useEffect awal
+      setIsLoading(true);
       const res = await getCustomerList(1, user.id, 1, 0, "", "all");
+      setIsLoading(false);
       if (res && res.data) {
         const updatedList = res.data.map((item) => ({
           id: item.id,
@@ -510,6 +525,19 @@ export const FieldServiceContextProvider = ({ children }) => {
         x_studio_stock_date: formatDateForBackendWIB(new Date()),
       },
     ]);
+
+    setProductStock({
+      id: 0,
+      product: "",
+      stock: 0,
+      sale: 0,
+    });
+  };
+  const handleCloseCheckOut = () => {
+    setIsFormEdit(false);
+    setDetailDemo([]);
+    setDetailDirect([]);
+    setProductStocks([]);
   };
   return (
     <FieldServiceContext.Provider
@@ -569,6 +597,9 @@ export const FieldServiceContextProvider = ({ children }) => {
         handleAddStockProduct,
         productStocks,
         fetchCustomerAfterAdd,
+        isLoading,
+
+        handleCloseCheckOut,
       }}
     >
       {children}

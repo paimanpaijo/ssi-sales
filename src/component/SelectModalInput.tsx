@@ -1,6 +1,7 @@
 /** @format */
 
 import React, { useEffect, useMemo, useState } from "react";
+
 import {
   FlatList,
   ListRenderItem,
@@ -27,6 +28,7 @@ const SelectModalInput: React.FC<Props> = ({
   modalProps,
   visible,
   onClose,
+  selectedValue,
 }) => {
   const [internalVisible, setInternalVisible] = useState(false);
   const modalVisible = visible ?? internalVisible;
@@ -86,7 +88,7 @@ const SelectModalInput: React.FC<Props> = ({
         <TextInput
           mode="outlined"
           label={label}
-          value={selectedLabel} // Gunakan selectedLabel agar TextInput tahu ada isinya
+          value={selectedValue ?? selectedLabel} // Gunakan selectedLabel agar TextInput tahu ada isinya
           placeholder={placeholder}
           editable={false}
           right={<TextInput.Icon icon="chevron-down" />}

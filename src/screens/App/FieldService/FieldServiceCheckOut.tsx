@@ -30,6 +30,7 @@ const FieldServiceCheckOut = () => {
   const {
     setIsFormEdit,
     handleCheckOut,
+    handleCloseCheckOut,
     fieldServiceData,
     handleOnChangeData,
     attendance,
@@ -59,7 +60,7 @@ const FieldServiceCheckOut = () => {
       >
         <FormHeader
           title="Check Out "
-          onClose={() => setIsFormEdit(false)}
+          onClose={handleCloseCheckOut}
           onSave={handleCheckOut}
           backgroundColor="#dc3545"
         />
@@ -164,7 +165,7 @@ const FieldServiceCheckOut = () => {
                 // ⏱ round 5 menit
                 const step = 5;
                 finalDate.setMinutes(
-                  Math.round(finalDate.getMinutes() / step) * step
+                  Math.round(finalDate.getMinutes() / step) * step,
                 );
 
                 // 🕘 validasi jam kerja
@@ -178,7 +179,7 @@ const FieldServiceCheckOut = () => {
                 // kirim WIB string
                 handleOnChangeData(
                   "x_studio_end_time",
-                  formatDateForBackendWIB(finalDate)
+                  formatDateForBackendWIB(finalDate),
                 );
               }}
             />

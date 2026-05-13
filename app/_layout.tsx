@@ -128,6 +128,10 @@ function AppContent() {
         options={{ headerShown: true, title: "Planning and Actuals" }}
       />
       <Stack.Screen
+        name="approval"
+        options={{ headerShown: true, title: "Approval Sales Order" }}
+      />
+      <Stack.Screen
         name="modal"
         options={{ presentation: "modal", title: "Modal" }}
       />

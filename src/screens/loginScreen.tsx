@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native";
 import { Button, Snackbar, Text, TextInput } from "react-native-paper";
-
+import { saveToken } from "../library/Storage";
 const TOKEN_KEY = "token_v1"; // must match AuthContext
 const BIO_KEY = "biometric_enabled_v1";
 const TOKEN_TTL_SECONDS = 60 * 60; // 1 hour (same as AuthContext)
@@ -81,6 +81,7 @@ export default function LoginScreen() {
       showSnack("Login sukses");
       // open biometric enable prompt
       setShowBiometricPrompt(true);
+      await saveToken(tok);
       // navigate after small delay so modal can show (or you can navigate immediately and let modal be handled elsewhere)
       // we will navigate immediately to dashboard as the user is authenticated
       router.replace("/(tabs)");
@@ -187,10 +188,10 @@ export default function LoginScreen() {
             <TextInput
               label="Password"
               value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
               style={loginStyles.input}
               left={<TextInput.Icon icon="lock" />}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
               right={
                 <TextInput.Icon
                   icon={showPassword ? "eye-off" : "eye"}
@@ -228,7 +229,7 @@ export default function LoginScreen() {
             />
             <View style={loginStyles.footer}>
               <Text variant="bodySmall" style={{ color: "white" }}>
-                Versi 1.1
+                Ver 1.1.2605
               </Text>
               <Text variant="bodySmall" style={{ color: "white" }}>
                 &copy; 2025 Shriram Seed Indonesia™

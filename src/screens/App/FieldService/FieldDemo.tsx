@@ -15,6 +15,7 @@ const FieldDemo = () => {
   const [demo, setDemo] = useState({
     id: 0,
     product: "",
+    seeds: 0,
     ubinan: 0,
     rendemen: 0,
     plant_date: new Date(),
@@ -31,6 +32,7 @@ const FieldDemo = () => {
           placeholder="Produk"
           data={productDemo}
           value={demo.product}
+          selectedValue={demo.product}
           renderHeader={(close) => (
             <View
               style={{
@@ -72,6 +74,18 @@ const FieldDemo = () => {
               product: item.label,
               id: item.value,
             }))
+          }
+        />
+        <TextInput
+          value={demo.seeds.toString()}
+          mode="outlined"
+          label=" Seed (kg)"
+          selectTextOnFocus={true}
+          keyboardType="numeric"
+          placeholder="Seed (kg)"
+          style={{ backgroundColor: "white", marginTop: 5 }}
+          onChangeText={(value) =>
+            setDemo((prev) => ({ ...prev, seeds: value }))
           }
         />
 
@@ -128,6 +142,7 @@ const FieldDemo = () => {
               setDemo({
                 id: 0,
                 product: "",
+                seeds: 0,
                 ubinan: 0,
                 rendemen: 0,
                 plant_date: new Date(),
@@ -149,9 +164,9 @@ const FieldDemo = () => {
       >
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: "bold",
-            width: "60%",
+            width: "50%",
             textAlign: "center",
           }}
         >
@@ -159,9 +174,19 @@ const FieldDemo = () => {
         </Text>
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: "bold",
-            width: "40%",
+            width: "20%",
+            textAlign: "center",
+          }}
+        >
+          Seeds(Kg)
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "bold",
+            width: "30%",
             textAlign: "center",
           }}
         >
@@ -178,13 +203,15 @@ const FieldDemo = () => {
               borderBottomColor: MD2Colors.grey300,
               borderBottomWidth: 1,
               padding: 5,
+              marginLeft: 15,
+              marginRight: 15,
               justifyContent: "center",
             },
           ]}
         >
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 14,
 
               width: "10%",
               textAlign: "center",
@@ -215,9 +242,9 @@ const FieldDemo = () => {
           </Text>
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 14,
 
-              width: "50%",
+              width: "60%",
               paddingLeft: 5,
             }}
           >
@@ -225,9 +252,19 @@ const FieldDemo = () => {
           </Text>
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 14,
 
-              width: "40%",
+              width: "10%",
+              textAlign: "right",
+            }}
+          >
+            {item.x_studio_seeds}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+
+              width: "30%",
               textAlign: "center",
             }}
           >

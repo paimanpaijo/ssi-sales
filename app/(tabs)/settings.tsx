@@ -1,14 +1,15 @@
 /** @format */
 
+import { UserContextProvider } from "@/src/context/UserContext";
+import ProfileScreen from "@/src/screens/App/Profile/ProfileScreen";
 import { Component } from "react";
-import { Text, View } from "react-native";
 
 export class settings extends Component {
   render() {
     return (
-      <View>
-        <Text> textInComponent </Text>
-      </View>
+      <UserContextProvider>
+        <ProfileScreen />
+      </UserContextProvider>
     );
   }
 }

@@ -29,7 +29,7 @@ export const getSalesList = async (
   status,
   sales_executive = 0,
   page = 1,
-  limit = 10
+  limit = 10,
 ) => {
   let sts = "";
   let se = "";
@@ -96,5 +96,32 @@ export const getListInvoice = async (user_id, month, year, page, limit) => {
     mth;
 
   const response = await axios.get(url);
+  return response.data;
+};
+
+export const listApproval = async (user_id, status, page) => {
+  const url =
+    apiUrlOdoo +
+    `/sales/listvalidation?approver_id=${user_id}&status=${status}&page=${page}&limit=10`;
+  const response = await axios.get(url);
+  return response.data;
+};
+
+export const getSalesDetail = async (id) => {
+  const url = apiUrlOdoo + `/sales/salesdetails?id=${id}`;
+  console.log(url);
+  const response = await axios.get(url);
+  return response.data;
+};
+
+export const approveSales = async (data) => {
+  const url = apiUrlOdoo + "/sales/approval/saleorder";
+
+  const response = await axios.post(url, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
   return response.data;
 };

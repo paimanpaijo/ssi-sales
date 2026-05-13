@@ -95,7 +95,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({
       console.error("onSave error:", err);
       Alert.alert(
         "Error",
-        (err && (err as Error).message) || "Gagal menyimpan"
+        (err && (err as Error).message) || "Gagal menyimpan",
       );
     } finally {
       if (disableWhileLoading) setLoading(false);

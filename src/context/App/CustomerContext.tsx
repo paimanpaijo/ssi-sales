@@ -12,6 +12,13 @@ const CustomerContext = createContext();
 
 export const CustomerContextProvider = ({ children }) => {
   const { user } = useAuth();
+  const [categories, setCategories] = useState([
+    "Dealer",
+    "Retailer",
+    "Trader",
+    "Farmer",
+    "Demo",
+  ]);
   const [isForm, setIsForm] = useState(false);
   const [customerList, setCustomerList] = useState([]);
   const [page, setPage] = useState(1);
@@ -67,6 +74,10 @@ export const CustomerContextProvider = ({ children }) => {
       setCustomerList(res.data);
       setTotal(res.count_data);
       setTotalPage(res.count_page);
+      console.log(res.custdemo);
+      if (res.custdemo === 1) {
+        setCategories(["Dealer", "Retailer", "Trader", "Farmer"]);
+      }
     });
   }, [page, searchText]);
 
@@ -85,7 +96,7 @@ export const CustomerContextProvider = ({ children }) => {
 
   async function uploadFileToServer(
     fileMeta: { uri: string; name: string; mime?: string; ext?: string },
-    payloadFields: Record<string, any> = {}
+    payloadFields: Record<string, any> = {},
   ) {
     try {
       const form = new FormData();
@@ -183,7 +194,7 @@ export const CustomerContextProvider = ({ children }) => {
         try {
           const uploadResp = await uploadFileToServer(
             customer.file_document,
-            payloadFields
+            payloadFields,
           );
 
           if (!uploadResp || !uploadResp.success) {
@@ -193,7 +204,7 @@ export const CustomerContextProvider = ({ children }) => {
           // Upload succeeded; server already created/updated partner in Odoo.
           Alert.alert(
             "Success",
-            uploadResp.message ?? "File and data uploaded"
+            uploadResp.message ?? "File and data uploaded",
           );
           // refresh list if server returned partner id or you want to reload
           const listRes = await getCustomerList(1, user.id, 1, 10, searchText);
@@ -208,7 +219,7 @@ export const CustomerContextProvider = ({ children }) => {
           console.error("Upload failed:", uErr);
           Alert.alert(
             "Upload gagal",
-            (uErr as any)?.message || "Gagal mengunggah file."
+            (uErr as any)?.message || "Gagal mengunggah file.",
           );
         } finally {
           setIsSaving(false);
@@ -235,7 +246,7 @@ export const CustomerContextProvider = ({ children }) => {
       setIsSaving(false);
       Alert.alert(
         "Error",
-        (err as any)?.message || "Terjadi kesalahan saat menyimpan"
+        (err as any)?.message || "Terjadi kesalahan saat menyimpan",
       );
     }
   };
@@ -262,6 +273,7 @@ export const CustomerContextProvider = ({ children }) => {
         isSaving,
         searchText,
         setSearchText,
+        categories,
       }}
     >
       {children}
