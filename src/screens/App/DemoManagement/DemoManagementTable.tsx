@@ -3,7 +3,7 @@
 import MonthYearPickerModal from "@/src/component/MonthYearPickerModal";
 import PagingMobile from "@/src/component/PagingMobile";
 import { useDemoManagementContext } from "@/src/context/App/DemoManagementContext";
-import { formatDateForDisplay } from "@/src/library/Utility";
+import { formatDateForDisplay, getMapDirection } from "@/src/library/Utility";
 import formStyles from "@/src/style/FormStyles";
 import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
@@ -98,6 +98,18 @@ const DemoManagementTable = () => {
       </Card.Content>
 
       <Card.Actions style={{ justifyContent: "flex-end" }}>
+        <View style={styles.actionButtonWrapper}>
+          <IconButton
+            icon="directions"
+            size={18}
+            iconColor="green"
+            style={{ backgroundColor: "lightgreen" }}
+            onPress={() => {
+              getMapDirection(item.lat, item.lang);
+            }}
+          />
+          <Text style={styles.actionText}>Directions</Text>
+        </View>
         {!item.maintenance_date && (
           <View style={styles.actionButtonWrapper}>
             <IconButton

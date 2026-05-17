@@ -144,7 +144,7 @@ const ProfileAvatar = () => {
           <View
             style={{
               gap: 12,
-              marginVertical: 30,
+              marginVertical: 5,
               alignContent: "center",
               justifyContent: "center",
             }}
@@ -152,6 +152,22 @@ const ProfileAvatar = () => {
             <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
               Informasi User
             </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 0,
+              }}
+            >
+              <TextInput
+                mode="outlined"
+                label="username"
+                editable={false}
+                left={<TextInput.Icon icon="account" />}
+                value={user?.username}
+                style={{ flex: 1 }}
+              />
+            </View>
 
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TextInput

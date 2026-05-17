@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 import { id } from "date-fns/locale";
+import { Linking, Platform } from "react-native";
 
 const WIB_OFFSET = 7 * 60; // menit
 export const validateEmail = (email) => {

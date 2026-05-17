@@ -96,6 +96,7 @@ export const FieldServiceContextProvider = ({ children }) => {
         x_studio_ubinan: 0,
         x_studio_rendemen: 0,
         x_studio_plant_date: demo.plant_date,
+        x_studio_plant_note: demo.note,
       },
     ]);
   };

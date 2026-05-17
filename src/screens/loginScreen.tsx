@@ -59,11 +59,11 @@ export default function LoginScreen() {
       showSnack("Silakan isi email dan password.");
       return false;
     }
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(email)) {
-      showSnack("Format email tidak valid.");
-      return false;
-    }
+    // const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!re.test(email)) {
+    //   showSnack("Format email tidak valid.");
+    //   return false;
+    // }
     return true;
   };
 

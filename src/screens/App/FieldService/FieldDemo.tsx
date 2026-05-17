@@ -19,6 +19,7 @@ const FieldDemo = () => {
     ubinan: 0,
     rendemen: 0,
     plant_date: new Date(),
+    note: "",
   });
   const [tempDate, setTempDate] = useState(new Date());
   const [visibleDate, setVisibleDate] = useState(false);
@@ -87,6 +88,18 @@ const FieldDemo = () => {
           onChangeText={(value) =>
             setDemo((prev) => ({ ...prev, seeds: value }))
           }
+        />
+        <TextInput
+          value={demo.note}
+          mode="outlined"
+          label="Planting Note"
+          selectTextOnFocus={true}
+          placeholder="Planting Note"
+          onChangeText={(value) =>
+            setDemo((prev) => ({ ...prev, note: value }))
+          }
+          multiline
+          style={{ backgroundColor: "white", height: 100 }}
         />
 
         <View
